@@ -1,0 +1,10 @@
+c:\Users\IronDragon\Documents\My Games\Terraria\tModLoader\ModSources\AncientRealms\obj\Debug\net8.0\AncientRealms.csproj.AssemblyReference.cache
+c:\Users\IronDragon\Documents\My Games\Terraria\tModLoader\ModSources\AncientRealms\obj\Debug\net8.0\AncientRealms.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\IronDragon\Documents\My Games\Terraria\tModLoader\ModSources\AncientRealms\obj\Debug\net8.0\AncientRealms.AssemblyInfoInputs.cache
+c:\Users\IronDragon\Documents\My Games\Terraria\tModLoader\ModSources\AncientRealms\obj\Debug\net8.0\AncientRealms.AssemblyInfo.cs
+c:\Users\IronDragon\Documents\My Games\Terraria\tModLoader\ModSources\AncientRealms\obj\Debug\net8.0\AncientRealms.csproj.CoreCompileInputs.cache
+C:\Users\orion\OneDrive\Documents\My Games\Terraria\tModLoader\ModSources\AncientRealms\obj\Debug\net8.0\AncientRealms.csproj.AssemblyReference.cache
+C:\Users\orion\OneDrive\Documents\My Games\Terraria\tModLoader\ModSources\AncientRealms\obj\Debug\net8.0\AncientRealms.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\orion\OneDrive\Documents\My Games\Terraria\tModLoader\ModSources\AncientRealms\obj\Debug\net8.0\AncientRealms.AssemblyInfoInputs.cache
+C:\Users\orion\OneDrive\Documents\My Games\Terraria\tModLoader\ModSources\AncientRealms\obj\Debug\net8.0\AncientRealms.AssemblyInfo.cs
+C:\Users\orion\OneDrive\Documents\My Games\Terraria\tModLoader\ModSources\AncientRealms\obj\Debug\net8.0\AncientRealms.csproj.CoreCompileInputs.cache

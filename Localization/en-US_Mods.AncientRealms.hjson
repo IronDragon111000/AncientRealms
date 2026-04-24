@@ -1,0 +1,34 @@
+Tiles.RealmGatewayTile.MapEntry: Realm Gateway Tile
+
+Items: {
+	RealmGateway: {
+		DisplayName: Realm Gateway
+		Tooltip: ""
+	}
+
+	GateKeeperBow: {
+		DisplayName: Gate Keeper Bow
+		Tooltip: ""
+	}
+
+	GateKeeperSpear: {
+		DisplayName: Gate Keeper Spear
+		Tooltip: ""
+	}
+}
+
+NPCs: {
+	GateKeeperCore.DisplayName: Gate Keeper Core
+	GateKeeper.DisplayName: Gate Keeper
+	GateKeeperCrystal.DisplayName: Gate Keeper Crystal
+	EldritchVoid.DisplayName: Eldritch Void
+}
+
+Projectiles: {
+	GateKeeperLaser.DisplayName: Gate Keeper Laser
+	GateKeeperBowArrow.DisplayName: Gate Keeper Bow Arrow
+	GateKeeperSpearProjectile.DisplayName: Gate Keeper Spear Projectile
+	EldritchVoidP3Projectile.DisplayName: Eldritch Void P3 Projectile
+	EldritchVoidLaserSource.DisplayName: Eldritch Void Laser Source
+	EldritchVoidLaser.DisplayName: Eldritch Void Laser
+}

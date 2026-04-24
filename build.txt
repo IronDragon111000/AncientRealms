@@ -1,0 +1,4 @@
+displayName = Ancient Realms
+author = Orion
+version = 0.1
+modReferences = SubworldLibrary, StructureHelper
