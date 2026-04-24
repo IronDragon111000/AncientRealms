@@ -266,14 +266,15 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
             if (AttackTimer == 1) //switching out attacks
             {
                 AttackPhase++;
-                if (AttackPhase > 2)
+                if (AttackPhase > 3)
                     AttackPhase = 1;
             }
             switch (AttackPhase) //Attacks
             {
                 case 0: break;
                 case 1: finalLaser(); break;
-                case 2: if(AttackTimer < 300) ResetAttack(); break;
+                case 2: if(AttackTimer > 300) ResetAttack(); break; // delay between attacks
+                case 3: finalExplodingProjectiles(); break;
             }
 
         }

@@ -71,7 +71,6 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 					if (Player.active && !Player.dead && Helpers.CollisionHelper.CheckLinearCollision(Projectile.Center, endPoint, Projectile.width/2, Player.Hitbox, out Vector2 point))
 					{
 						Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(k, Projectile.whoAmI), Projectile.damage, 0, false, false, -1, false);
-						break;
 					}
 				}
             }

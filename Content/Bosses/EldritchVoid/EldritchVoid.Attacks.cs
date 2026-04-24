@@ -23,11 +23,13 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
         // Attack Damage for Phase 2 attacks
         // Attack Damage for Phase 3 attacks
 		public int finalLaserDamage = 50;
+		public int finalExplodingProjectileDamage= 50;
 
 		// Telegraph time for Phase 1 attacks
 		// Telegraph time for Phase 2 attacks
 		// Telegraph time for Phase 3 attacks
 		public int finalLaserTelegraphTime = 120;
+		public int finalExplodingProjectileDamage = 150;
         public void ResetAttack()
 		{
 			AttackTimer = 0;
@@ -61,15 +63,28 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 			{
 				RandomizeTarget(out Player target);
 				Vector2 direction = Vector2.Normalize(target.Center - NPC.Center);
-				Vector2 velocity = direction;
-
-				Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<EldritchVoidLaserSource>(), finalLaserDamage, 0f, -1, AttackTimer, finalLaserTelegraphTime, target.whoAmI);
+				Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, direction, ModContent.ProjectileType<EldritchVoidLaserSource>(), finalLaserDamage, 0f, -1, AttackTimer, finalLaserTelegraphTime, target.whoAmI);
 			}
 			if(AttackTimer > 150)
 			{
 				Main.projectile.Where(p => p.active && p.ModProjectile is EldritchVoidLaserSource).ToList().ForEach(p => p.Kill());
 				ResetAttack();
 			}
+		}
+
+		private void finalExplodingProjectiles()
+		{
+			if(AttackTimer == 1)
+			{
+				float velocityIncreament = Math.TwoPi()/5;
+				for(int i = 0; i < 5; i++)
+				{
+					Vector2 velocity = new Vector2(Math.Cos(i * velocityIncreament), Math.Sin(i * velocityIncreament));
+					//Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<>(), finalExplodingProjectileDamage);
+				}
+			}
+			if(AttackTimer > 180)
+				ResetAttack();
 		}
     }
 }
