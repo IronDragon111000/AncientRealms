@@ -231,6 +231,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
         private void ThirdPhase()
         {
             //Pull the players in
+            // Currently causes players to be unable to fall through platforms under the boss, this will need to be fixed before release, but for now when coupled with the mod InstantPlatformFallthrough it fixs it but is not an ideal solution as it allows instant fall though all the time instead of just during the fight
             foreach (Player Player in Main.player.Where(n => n.active && !n.dead))
             {
                 Vector2 direction = NPC.Center - Player.Center;

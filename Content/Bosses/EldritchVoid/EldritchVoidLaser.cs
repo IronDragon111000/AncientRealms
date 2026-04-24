@@ -40,7 +40,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 		}
         public override void SetDefaults()
         {
-            Projectile.width = 36;
+            Projectile.width = 72;
             Projectile.height = 14;
             Projectile.penetrate = -1;
 			Projectile.alpha = 0; // Laser is drawn manually in PreDraw, so don't make it transparent
@@ -68,7 +68,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
                 for (int k = 0; k < Main.maxPlayers; k++) //laser collision
 				{
 					Player Player = Main.player[k];
-					if (Player.active && !Player.dead && Helpers.CollisionHelper.CheckLinearCollision(Projectile.Center, endPoint, Projectile.width, Player.Hitbox, out Vector2 point))
+					if (Player.active && !Player.dead && Helpers.CollisionHelper.CheckLinearCollision(Projectile.Center, endPoint, Projectile.width/2, Player.Hitbox, out Vector2 point))
 					{
 						Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(k, Projectile.whoAmI), Projectile.damage, 0, false, false, -1, false);
 						break;
@@ -84,6 +84,8 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 			int frameHeight = texture.Height / Main.projFrames[Type];
 			int spriteSheetOffset;
 
+			Vector2 drawScale = new Vector2(Projectile.scale);
+
 			DelegateMethods.f_1 = 1f; // f_1 is an unnamed decompiled variable whose function is unknown. Leave it at 1.
 			Vector2 startPosition = Projectile.Center - Main.screenPosition;
 			Vector2 endPosition = endPoint - Main.screenPosition;
@@ -91,23 +93,30 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 			if(timer < source.telegraphLength) // tell
             {
 				spriteSheetOffset = frameHeight * 0;
-				DrawBeam(Main.spriteBatch, texture, startPosition, endPosition, new Vector2(1f), Color.Purple * 0.2f, spriteSheetOffset);
+				DrawBeam(Main.spriteBatch, texture, startPosition, endPosition, drawScale, Color.Purple * 0.05f, spriteSheetOffset);
 							
             } else // Laser is active
             {
 				spriteSheetOffset = frameHeight * 1;
-				// Draw the outer beam.
-				DrawBeam(Main.spriteBatch, texture, startPosition, endPosition, new Vector2(1f), Color.Purple * Projectile.Opacity, spriteSheetOffset);
-
 				// Draw the inner beam, which is half size.
-				DrawBeam(Main.spriteBatch, texture, startPosition, endPosition, new Vector2(0.7f), Color.White * Projectile.Opacity, spriteSheetOffset);
+				DrawBeam(Main.spriteBatch, texture, startPosition, endPosition, drawScale * 0.7f, Color.White * Projectile.Opacity, spriteSheetOffset);
+
+				// Draw the outer beam.
+				DrawBeam(Main.spriteBatch, texture, startPosition, endPosition, drawScale, Color.Purple * Projectile.Opacity, spriteSheetOffset);
             }
 			
 			return false;
 		}
 
 		private void DrawBeam(SpriteBatch spriteBatch, Texture2D texture, Vector2 startPosition, Vector2 endPosition, Vector2 drawScale, Color beamColor, int frameOffset) {
-			Utils.LaserLineFraming lineFraming = new Utils.LaserLineFraming(DelegateMethods.RainbowLaserDraw);
+			Utils.LaserLineFraming lineFraming = (int stage, Vector2 currentPosition, float distanceLeft, Rectangle lastFrame, out float distCovered, out Rectangle frame, out Vector2 origin, out Color color) =>
+			{
+				distCovered = drawScale.X;
+				int y = frameOffset;
+				frame = new Rectangle(0, y + frameOffset, texture.Width, texture.Height + frameOffset);
+				origin = new Vector2(texture.Width / 2f, frameOffset);
+				color = beamColor;
+			};
 
 			// c_1 is an unnamed decompiled variable which is the render color of the beam drawn by DelegateMethods.RainbowLaserDraw.
 			DelegateMethods.c_1 = beamColor;

@@ -18,7 +18,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
         public ref float telegraphLength => ref Projectile.ai[1];
         public ref float targetPlayer => ref Projectile.ai[2];
         public EldritchVoid parent;
-        private const float AimResponsiveness = 0.03f;
+        private float AngularSpeed = MathHelper.ToRadians(0.75f); // 0.75 degrees per frame max turn speed
 
         public override void SetStaticDefaults()
         {
@@ -55,12 +55,13 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
                 return;
             }
             Player player = Main.player[(int)targetPlayer];
-            UpdateAim(parent.NPC.Center, 1f);
+            if(timer <= telegraphLength)
+                UpdateAim(parent.NPC.Center + new Vector2(0, -66), AngularSpeed);
 
             if(timer == 2)
                 FireBeam();
 
-            Projectile.Center = parent.NPC.Center + Projectile.velocity * 10f; // Move the Prism a bit in front of the boss
+            Projectile.Center = parent.NPC.Center + new Vector2(0, -66) + (Projectile.velocity * 100f); // Move the Prism a bit in front of the boss's eye
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2; // Rotate to face the direction of movement
         }
 
@@ -90,14 +91,23 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 				aim = -Vector2.UnitY;
 			}
 
-			// Change a portion of the Prism's current velocity so that it points to the mouse. This gives smooth movement over time.
-			aim = Vector2.Normalize(Vector2.Lerp(Vector2.Normalize(Projectile.velocity), aim, AimResponsiveness));
-			aim *= speed;
+			// Calculate current and target angles
+			float currentAngle = Projectile.velocity.ToRotation();
+			float targetAngle = aim.ToRotation();
 
-			if (aim != Projectile.velocity) {
+			// Get the smallest angle difference
+			float angleDiff = MathHelper.WrapAngle(targetAngle - currentAngle);
+
+			// Rotate by a constant amount towards the target, clamped to max speed
+			float turnAmount = MathHelper.Clamp(angleDiff, -speed, speed);
+			float newAngle = currentAngle + turnAmount;
+
+			// Set new velocity
+			Projectile.velocity = newAngle.ToRotationVector2();
+
+			if (Projectile.velocity != aim) {
 				Projectile.netUpdate = true;
 			}
-			Projectile.velocity = aim;
 		}
 
     }
