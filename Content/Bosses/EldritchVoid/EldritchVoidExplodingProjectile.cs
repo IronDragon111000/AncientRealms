@@ -54,9 +54,9 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 
         public override bool PreDraw()
         {
-            Texture2D texture = Content.Bosses.EldritchVoid.Value;
+            Texture2D texture = Content.Bosses.EldritchVoid.EldritchVoidExplodingProjectileTell.Value;
 
-			Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, default, lightColor * Projectile.Opacity, Projectile.rotation + rotationOffset, origin, Projectile.scale, effects, 0);
+			Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, default, lightColor * Projectile.Opacity * 0.1f, Projectile.rotation + rotationOffset, origin, Projectile.scale, effects, 0);
             return true;
         }
     }
