@@ -192,13 +192,13 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
             if (AttackTimer == 1) //switching out attacks
             {
                 AttackPhase++;
-                if (AttackPhase > 2)
+                if (AttackPhase > 1)
                     AttackPhase = 1;
             }
             switch (AttackPhase) //Attacks
             {
                 case 0: break;
-                case 1: break;
+                case 1: teleportAttack(); break;
                 case 2: break;
             }
             if(NPC.life < NPC.lifeMax * 0.6f) //transition to phase 2 at 60% health   

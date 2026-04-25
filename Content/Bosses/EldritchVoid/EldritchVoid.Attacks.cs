@@ -14,18 +14,23 @@ using System.Linq;
 using static Terraria.ModLoader.ModContent;
 using Terraria.Graphics;
 using Humanizer;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace AncientRealms.Content.Bosses.EldritchVoid
 {
     public sealed partial class EldritchVoid : ModNPC
     {
+		public Player targetPlayer;
         // Attack Damage for Phase 1 attacks
+		public int teleportAttackDamage = 40;
         // Attack Damage for Phase 2 attacks
         // Attack Damage for Phase 3 attacks
 		public int finalLaserDamage = 50;
 		public int finalExplodingProjectileDamage= 50;
 
 		// Telegraph time for Phase 1 attacks
+		public int teleportAttackTelegraphTime = 30;
+		public int teleportAttackDelay = 80;
 		// Telegraph time for Phase 2 attacks
 		// Telegraph time for Phase 3 attacks
 		public int finalLaserTelegraphTime = 120;
@@ -55,6 +60,23 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 				target = Main.player.Where(n => n.active && !n.dead).ToList()[Players[random]];
 
 			NPC.netUpdate = true;
+		}
+
+		private void teleportAttack()
+		{
+			if(AttackTimer > 240)
+				ResetAttack();
+			if(AttackTimer % teleportAttackDelay == 1)
+			{
+				RandomizeTarget(out targetPlayer);
+				float angle = Main.rand.NextFloat() * MathHelper.TwoPi;
+				NPC.Center = targetPlayer.Center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 500f;
+			}
+			if(AttackTimer % teleportAttackDelay > teleportAttackTelegraphTime && AttackTimer % teleportAttackDelay < teleportAttackTelegraphTime + 8)
+			{
+				Vector2 direction = Vector2.Normalize(targetPlayer.Center - NPC.Center).RotatedBy(((((AttackTimer % teleportAttackDelay) - teleportAttackTelegraphTime + 4) / (8)) * MathHelper.PiOver4) - MathHelper.PiOver4);
+				Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + direction * 5f, direction * 0.4f, ModContent.ProjectileType<EldritchVoidTeleportVolleyProjectile>(), teleportAttackDamage, 0.5f);
+			}
 		}
 
 		private void finalLaser()

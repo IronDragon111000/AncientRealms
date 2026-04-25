@@ -32,4 +32,5 @@ Projectiles: {
 	EldritchVoidLaserSource.DisplayName: Eldritch Void Laser Source
 	EldritchVoidLaser.DisplayName: Eldritch Void Laser
 	EldritchVoidExplodingProjectile.DisplayName: Eldritch Void Exploding Projectile
+	EldritchVoidTeleportVolleyProjectile.DisplayName: Eldritch Void Teleport Volley Projectile
 }
