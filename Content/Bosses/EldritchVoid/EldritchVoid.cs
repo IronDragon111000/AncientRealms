@@ -42,7 +42,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
             NPC.scale = 2f;
             NPC.damage = 65;
             NPC.defense = 30;
-            NPC.lifeMax = 15000;
+            NPC.lifeMax = 17500;
             NPC.HitSound = SoundID.NPCHit1;
             NPC.DeathSound = SoundID.NPCDeath1;
             NPC.noGravity = true;
@@ -201,7 +201,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
                 case 1: break;
                 case 2: break;
             }
-            if(NPC.life < NPC.lifeMax * 0.5f) //transition to phase 2 at 50% health   
+            if(NPC.life < NPC.lifeMax * 0.6f) //transition to phase 2 at 60% health   
             {
                 ChangePhase(AIStates.SecondPhase, true);
             }
@@ -222,7 +222,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
                 case 2: break;
             }
 
-            if(NPC.life < NPC.lifeMax * 0.1f) //transition to phase 3 at 10% health   
+            if(NPC.life < NPC.lifeMax * 0.15f) //transition to phase 3 at 15% health   
             {
                 ChangePhase(AIStates.ThirdPhase, true);
             }
