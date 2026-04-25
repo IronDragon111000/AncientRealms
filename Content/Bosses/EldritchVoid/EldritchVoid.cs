@@ -273,7 +273,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
             {
                 case 0: break;
                 case 1: finalLaser(); break;
-                case 2: if(AttackTimer > 300) ResetAttack(); break; // delay between attacks
+                case 2: if(AttackTimer > 180) ResetAttack(); break; // delay between attacks
                 case 3: finalExplodingProjectiles(); break;
             }
 

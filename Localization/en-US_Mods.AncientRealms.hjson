@@ -31,4 +31,5 @@ Projectiles: {
 	EldritchVoidP3Projectile.DisplayName: Eldritch Void P3 Projectile
 	EldritchVoidLaserSource.DisplayName: Eldritch Void Laser Source
 	EldritchVoidLaser.DisplayName: Eldritch Void Laser
+	EldritchVoidExplodingProjectile.DisplayName: Eldritch Void Exploding Projectile
 }

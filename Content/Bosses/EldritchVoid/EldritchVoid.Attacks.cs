@@ -29,7 +29,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 		// Telegraph time for Phase 2 attacks
 		// Telegraph time for Phase 3 attacks
 		public int finalLaserTelegraphTime = 120;
-		public int finalExplodingProjectileDamage = 150;
+		public int finalExplodingProjectileTelegraphTime = 150;
         public void ResetAttack()
 		{
 			AttackTimer = 0;
@@ -76,14 +76,14 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 		{
 			if(AttackTimer == 1)
 			{
-				float velocityIncreament = Math.TwoPi()/5;
+				float velocityIncreament = MathHelper.TwoPi/5;
 				for(int i = 0; i < 5; i++)
 				{
-					Vector2 velocity = new Vector2(Math.Cos(i * velocityIncreament), Math.Sin(i * velocityIncreament));
-					//Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<>(), finalExplodingProjectileDamage);
+					Vector2 velocity = new Vector2((float)Math.Cos(i * velocityIncreament), (float)Math.Sin(i * velocityIncreament)) * 5f;
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<EldritchVoidExplodingProjectile>(), finalExplodingProjectileDamage, 0 ,0 ,0);
 				}
 			}
-			if(AttackTimer > 180)
+			if(AttackTimer > 300)
 				ResetAttack();
 		}
     }

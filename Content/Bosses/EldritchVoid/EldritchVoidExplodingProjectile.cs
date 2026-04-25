@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using static Microsoft.Xna.Framework.Graphics.Texture2D;
 using System;
 using System.IO;
 using Terraria;
@@ -22,10 +23,11 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 {
     public class EldritchVoidExplodingProjectile : ModProjectile
     {
+        public ref float damage => ref Projectile.ai[0];
         public override void SetDefaults()
         {
-            Projectile.width = 10;
-            Projectile.height = 10;
+            Projectile.width = 64;
+            Projectile.height = 64;
             Projectile.friendly = false;
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
@@ -37,7 +39,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 
         public override void AI()
         {
-            Projectile.velocity *= 0.95f;
+            Projectile.velocity *= 0.99f;
         }
 
         public override void OnKill(int timeLeft)
@@ -45,19 +47,20 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
             for (int k = 0; k < Main.maxPlayers; k++) //laser collision
 			{
 				Player Player = Main.player[k];
-                if(CheckCircularCollision(Projectile.Center, 126, Player.hitbox))
+                if(CollisionHelper.CheckCircularCollision(Projectile.Center, 200, Player.Hitbox))
                 {
-                    						Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(k, Projectile.whoAmI), Projectile.damage, 0, false, false, -1, false);
+                    Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(k, Projectile.whoAmI), (int)damage, 0, false, false, -1, false);
                 }
             }
         }
 
-        public override bool PreDraw()
+        public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D texture = Content.Bosses.EldritchVoid.EldritchVoidExplodingProjectileTell.Value;
-
-			Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, default, lightColor * Projectile.Opacity * 0.1f, Projectile.rotation + rotationOffset, origin, Projectile.scale, effects, 0);
-            return true;
+            Texture2D texture = Request<Texture2D>(Texture).Value;
+            Texture2D telegraphTexture = Request<Texture2D>(Texture + "Tell").Value;
+			Main.spriteBatch.Draw(telegraphTexture, Projectile.Center - Main.screenPosition - new Vector2(telegraphTexture.Width / 2, telegraphTexture.Height / 2), default, Color.DarkMagenta * 0.25f);
+            Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition - new Vector2(texture.Width / 2, texture.Height / 2), default, Color.White);
+            return false;
         }
     }
 }
