@@ -255,7 +255,10 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
             // Spawn projectiles every 35 ticks
             if (GlobalTimer % 35 == 0)
             {
-                for (int i = 0; i < 4; i++)
+                int projectileCount = 4;
+                if(Main.expertMode)
+                    projectileCount++;
+                for (int i = 0; i < projectileCount; i++)
                 {
                     float angle = Main.rand.NextFloat() * MathHelper.TwoPi;
                     Vector2 spawnPos = NPC.Center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 1500f;

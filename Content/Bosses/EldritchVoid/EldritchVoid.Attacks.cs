@@ -25,7 +25,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
         // Attack Damage for Phase 1 attacks
 		public int teleportAttackDamage = 40;
 		public int explodingMinionDamage = 45;
-		public int explodingProjectileDamage = 50;
+		public int explodingProjectileRainDamage = 50;
         // Attack Damage for Phase 2 attacks
         // Attack Damage for Phase 3 attacks
 		public int finalLaserDamage = 60;
@@ -34,7 +34,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 		// Telegraph time for Phase 1 attacks
 		public int teleportAttackTelegraphTime = 30;
 		public int teleportAttackDelay = 80;
-		public int explodingProjectileTelegraphTime = 150;
+		public int explodingProjectileRainTelegraphTime = 150;
 		// Telegraph time for Phase 2 attacks
 		// Telegraph time for Phase 3 attacks
 		public int finalLaserTelegraphTime = 120;
@@ -82,6 +82,16 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 				Vector2 direction = Vector2.Normalize(targetPlayer.Center - NPC.Center).RotatedBy((((((AttackTimer % teleportAttackDelay) - teleportAttackTelegraphTime + ((projectileCount + 1) / 2)) / (projectileCount + 1))) * (MathHelper.Pi / 3)) - (MathHelper.Pi / 3));
 				Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + direction * 30f, direction * 0.4f, ModContent.ProjectileType<EldritchVoidTeleportVolleyProjectile>(), teleportAttackDamage, 0.5f);
 			}
+		}
+
+		private void explodingMinionSummon()
+		{
+			
+		}
+
+		private void explodingProjectileRain()
+		{
+			
 		}
 
 		private void finalLaser()
