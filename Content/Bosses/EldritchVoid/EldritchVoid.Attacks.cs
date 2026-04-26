@@ -15,6 +15,7 @@ using static Terraria.ModLoader.ModContent;
 using Terraria.Graphics;
 using Humanizer;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Build.Evaluation;
 
 namespace AncientRealms.Content.Bosses.EldritchVoid
 {
@@ -72,10 +73,11 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 				float angle = Main.rand.NextFloat() * MathHelper.TwoPi;
 				NPC.Center = targetPlayer.Center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * 500f;
 			}
-			if(AttackTimer % teleportAttackDelay > teleportAttackTelegraphTime && AttackTimer % teleportAttackDelay < teleportAttackTelegraphTime + 8)
+			int projectileCount = 10;
+			if(AttackTimer % teleportAttackDelay > teleportAttackTelegraphTime && AttackTimer % teleportAttackDelay < teleportAttackTelegraphTime + projectileCount + 1)
 			{
-				Vector2 direction = Vector2.Normalize(targetPlayer.Center - NPC.Center).RotatedBy(((((AttackTimer % teleportAttackDelay) - teleportAttackTelegraphTime + 4) / (8)) * MathHelper.PiOver4) - MathHelper.PiOver4);
-				Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + direction * 5f, direction * 0.4f, ModContent.ProjectileType<EldritchVoidTeleportVolleyProjectile>(), teleportAttackDamage, 0.5f);
+				Vector2 direction = Vector2.Normalize(targetPlayer.Center - NPC.Center).RotatedBy((((((AttackTimer % teleportAttackDelay) - teleportAttackTelegraphTime + ((projectileCount + 1) / 2)) / (projectileCount + 1))) * (MathHelper.Pi / 3)) - (MathHelper.Pi / 3));
+				Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + direction * 30f, direction * 0.4f, ModContent.ProjectileType<EldritchVoidTeleportVolleyProjectile>(), teleportAttackDamage, 0.5f);
 			}
 		}
 

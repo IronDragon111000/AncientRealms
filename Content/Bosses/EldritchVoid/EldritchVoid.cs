@@ -222,7 +222,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
                 case 2: break;
             }
 
-            if(NPC.life < NPC.lifeMax * 0.15f) //transition to phase 3 at 15% health   
+            if(NPC.life < NPC.lifeMax * 0.2f) //transition to phase 3 at 20% health   
             {
                 ChangePhase(AIStates.ThirdPhase, true);
             }

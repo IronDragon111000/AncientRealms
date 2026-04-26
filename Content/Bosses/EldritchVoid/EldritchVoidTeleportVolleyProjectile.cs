@@ -28,7 +28,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
         
         public override void SetDefaults()
         {
-            Projectile.width = 16;
+            Projectile.width = 14;
             Projectile.height = 20; 
             Projectile.friendly = false;
             Projectile.tileCollide = false;
@@ -37,6 +37,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
             Projectile.aiStyle = -1;
             Projectile.light = 0.5f;
             Projectile.timeLeft = 300;
+            Projectile.hostile = true;
         }
 
         public override void AI()
