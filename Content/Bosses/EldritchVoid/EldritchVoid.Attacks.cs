@@ -24,14 +24,17 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 		public Player targetPlayer;
         // Attack Damage for Phase 1 attacks
 		public int teleportAttackDamage = 40;
+		public int explodingMinionDamage = 45;
+		public int explodingProjectileDamage = 50;
         // Attack Damage for Phase 2 attacks
         // Attack Damage for Phase 3 attacks
-		public int finalLaserDamage = 50;
+		public int finalLaserDamage = 60;
 		public int finalExplodingProjectileDamage= 50;
 
 		// Telegraph time for Phase 1 attacks
 		public int teleportAttackTelegraphTime = 30;
 		public int teleportAttackDelay = 80;
+		public int explodingProjectileTelegraphTime = 150;
 		// Telegraph time for Phase 2 attacks
 		// Telegraph time for Phase 3 attacks
 		public int finalLaserTelegraphTime = 120;
