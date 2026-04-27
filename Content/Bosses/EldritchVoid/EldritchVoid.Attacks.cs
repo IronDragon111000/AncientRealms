@@ -26,6 +26,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 		public int teleportAttackDamage = 40;
 		public int explodingMinionDamage = 45;
 		public int explodingProjectileRainDamage = 50;
+		public int dashDamage = 55;
         // Attack Damage for Phase 2 attacks
         // Attack Damage for Phase 3 attacks
 		public int finalLaserDamage = 60;
@@ -35,6 +36,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 		public int teleportAttackTelegraphTime = 30;
 		public int teleportAttackDelay = 80;
 		public int explodingProjectileRainTelegraphTime = 150;
+		public int dashTelegraphTime = 45;
 		// Telegraph time for Phase 2 attacks
 		// Telegraph time for Phase 3 attacks
 		public int finalLaserTelegraphTime = 120;
@@ -86,12 +88,32 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 
 		private void explodingMinionSummon()
 		{
-			
+			int summonCount = 4;
+			if(Main.expertMode)
+				summonCount += 2;
+			if(Main.masterMode)
+				summonCount += 1;
+			if(Main.getGoodWorld)
+				summonCount += 1;
+			if(AttackTimer <= summonCount + 1)
+				NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<EldritchVoidExplosiveMinion>());
+			if(AttackTimer > 14)
+				ResetAttack();
 		}
 
 		private void explodingProjectileRain()
 		{
-			
+			if(AttackTimer > 60)
+			{
+				ResetAttack();
+			}
+		}
+		private void dash()
+		{
+			if(AttackTimer > 60)
+			{
+				ResetAttack();
+			}
 		}
 
 		private void finalLaser()

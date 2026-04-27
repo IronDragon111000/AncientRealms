@@ -21,6 +21,8 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
         internal ref float GlobalTimer => ref NPC.ai[0];
         internal ref float Phase => ref NPC.ai[1];
         internal ref float AttackPhase => ref NPC.ai[2];
+
+        private float AttackPhaseCycle = 0;
         internal ref float AttackTimer => ref NPC.ai[3];
 
         private bool justRecievedPacket = false; //true for the frame this recieves a packet update to handle any syncronizing
@@ -192,14 +194,24 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
             if (AttackTimer == 1) //switching out attacks
             {
                 AttackPhase++;
-                if (AttackPhase > 1)
-                    AttackPhase = 1;
+                if (AttackPhase > 3)
+                {
+                    if(AttackPhaseCycle % 3 == 0)
+                    {
+                        AttackPhase = 0;
+                    } else
+                    {
+                        AttackPhase = 1;
+                    }
+                    AttackPhaseCycle++;
+                }
             }
             switch (AttackPhase) //Attacks
             {
-                case 0: break;
+                case 0: explodingMinionSummon(); break;
                 case 1: teleportAttack(); break;
-                case 2: break;
+                case 2: explodingProjectileRain(); break;
+                case 3: dash(); break;
             }
             if(NPC.life < NPC.lifeMax * 0.6f) //transition to phase 2 at 60% health   
             {
@@ -274,7 +286,6 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
             }
             switch (AttackPhase) //Attacks
             {
-                case 0: break;
                 case 1: finalLaser(); break;
                 case 2: if(AttackTimer > 180) ResetAttack(); break; // delay between attacks
                 case 3: finalExplodingProjectiles(); break;
