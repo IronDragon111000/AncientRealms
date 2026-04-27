@@ -17,7 +17,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 {
     public class GateKeeperCrystal : ModNPC
     {
-        public int crystalID;
+        internal ref float crystalID => ref NPC.AI[1];
         const int stunnedDefence = 13;
         public GateKeeper parent;
 

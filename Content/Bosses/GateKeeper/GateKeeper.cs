@@ -23,6 +23,10 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         internal ref float AttackPhase => ref NPC.ai[2];
 		internal ref float AttackTimer => ref NPC.ai[3];
 
+		private bool SpawnedCrystals = false;
+
+		private List<GateKeeperCrystal> Crystals = new List<GateKeeperCrystal>();
+
         private bool justRecievedPacket = false; //true for the frame this recieves a packet update to handle any syncronizing
 		private float prevTickGlobalTimer; //since globalTimer can jump around from from to frame from recieving packets, we want to make sure we catch logic for every number in the cutscenes if it fastforwarded from a packet (reversed is ignored so we don't double up on sounds/shake)
 		private float prevPhase = 0;
@@ -149,60 +153,20 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 
 				case (int)AIStates.SpawnAnimation: //the animation that plays while the boss is spawning and the title card is shown
 
-					//SpawnAnimation();
-					//DoRotation();
-					ChangePhase(AIStates.SecondPhase, true);
+					SpawnAnimation();
+					ChangePhase(AIStates.FirstPhase, true);
 					break;
 
                 case (int)AIStates.FirstPhase:
-                    if (AttackTimer == 1) //switching out attacks
-					{
-							AttackPhase++;
-							if (AttackPhase > 1)
-								AttackPhase = 1;
-					}
-
-                    switch (AttackPhase) //Attacks
-					{
-						case 0: break;
-						case 1: break;
-					}
+                    FirstPhase();
                     break;
 
                 case (int)AIStates.SecondPhase:
-                    if (AttackTimer == 1) //switching out attacks
-					{
-							AttackPhase++;
-							if (AttackPhase > 0)
-								AttackPhase = 0;
-					}
-
-                    switch (AttackPhase) //Attacks
-					{
-						case 0: LaserSpin(); break;
-						case 1: break;
-						case 2: break;
-						case 3: break;
-						case 4: break;
-					}
+                    SecondPhase();
                     break;
 
                 case (int)AIStates.ThirdPhase:
-                    if (AttackTimer == 1) //switching out attacks
-					{
-							AttackPhase++;
-							if (AttackPhase > 1)
-								AttackPhase = 1;
-					}
-
-                    switch (AttackPhase) //Attacks
-					{
-						case 0: break;
-						case 1: break;
-						case 2: break;
-						case 3: break;
-						case 4: break;
-					}
+                    ThirdPhase();
                     break;
 
                 case (int)AIStates.Leaving:
@@ -267,5 +231,106 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 }
             }
         }
+
+
+		private void SpawnAnimation()
+		{
+			SummonCrystals();
+		} 
+
+		private void FirstPhase()
+		{
+			if (AttackTimer == 1) //switching out attacks
+			{
+				AttackPhase++;
+				if (AttackPhase > 0)
+				AttackPhase = 0;
+			}
+
+            switch (AttackPhase) //Attacks
+			{
+				case 0: break;
+				case 1: break;
+				case 2: break;
+				case 3: break;
+				case 4: break;
+			}
+		}
+
+		private void SecondPhase()
+		{
+			if (AttackTimer == 1) //switching out attacks
+			{
+				AttackPhase++;
+				if (AttackPhase > 0)
+				AttackPhase = 0;
+			}
+
+            switch (AttackPhase) //Attacks
+			{
+				case 0: LaserSpin(); break;
+				case 1: break;
+				case 2: break;
+				case 3: break;
+				case 4: break;
+			}
+		}
+
+		private void ThirdPhase()
+		{
+			if (AttackTimer == 1) //switching out attacks
+			{
+				AttackPhase++;
+				if (AttackPhase > 1)
+					AttackPhase = 1;
+			}
+
+            switch (AttackPhase) //Attacks
+			{
+				case 0: break;
+				case 1: break;
+				case 2: break;
+				case 3: break;
+				case 4: break;
+			}
+		}
+
+		public void SummonCrystals() {
+			if(SpawnedCrystals)
+				return;
+			int minionCount = 4;
+			if (Main.expertMode) {
+				minionCount += 1; // Increase by 5 if expert or master mode
+			}
+
+			if (Main.getGoodWorld) {
+				minionCount += 1; // Increase by 5 if using the "For The Worthy" seed
+			}
+
+			SpawnedCrystals = true;
+
+			if (Main.netMode == NetmodeID.MultiplayerClient) {
+				// Because we want to spawn minions, and minions are NPCs, we have to do this on the server (or singleplayer, "!= NetmodeID.MultiplayerClient" covers both)
+				// This means we also have to sync it after we spawned and set up the minion
+				return;
+			}
+
+			int CrystalsTotalMaxHealth = 0;
+			for(int i = 0; i < minionCount; i++)
+			{
+				GateKeeperCrystal Crystal = NPC.NewNPCDirect(entitySource, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<GateKeeperCrystal>(), NPC.whoAmI);
+				Crystals.Add(Crystal);
+				CrystalsTotalMaxHealth += Crystal.lifeMax;
+				Crystal.parent = NPC.GetSource_FromThis;
+
+				// Finally, syncing, only sync on server and if the NPC actually exists (Main.maxNPCs is the index of a dummy NPC, there is no point syncing it)
+				if (Main.netMode == NetmodeID.Server) {
+					NetMessage.SendData(MessageID.SyncNPC, number: Crystal.whoAmI);
+				}
+			}
+
+			
+		}
+
     }
 }
