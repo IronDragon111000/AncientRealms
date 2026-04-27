@@ -13,33 +13,39 @@ namespace AncientRealms.Common.Systems
     public class BossDownedSystem : ModSystem
     {
        public static bool downedEldritchVoid = false;
+       public static bool downedGateKeeper = false;
 
         public override void ClearWorld()
         {
             downedEldritchVoid = false;
+            downedGateKeeper = false;
         }
 
         public override void SaveWorldData(TagCompound tag)
         {
             tag["downedEldritchVoid"] = downedEldritchVoid;
+            tag["downedGateKeeper"] = downedGateKeeper;
         }
 
         public override void LoadWorldData(TagCompound tag)
         {
             downedEldritchVoid = tag.GetBool("downedEldritchVoid");
+            downedGateKeeper = tag.GetBool("downedGateKeeper");
         }
 
         public override void NetSend(BinaryWriter writer)
         {
             var flags = new BitsByte();
-            flags[0] = downedEldritchVoid;
+            flags[1] = downedEldritchVoid;
+            flags[0] = downedGateKeeper;
             writer.Write(flags);
         }
 
         public override void NetReceive(BinaryReader reader)
         {
             BitsByte flags = reader.ReadByte();
-            downedEldritchVoid = flags[0];
+            downedEldritchVoid = flags[1];
+            downedGateKeeper = flags[0];
         }
     }
 }

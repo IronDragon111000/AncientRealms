@@ -12,6 +12,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using System.Linq;
 using static Terraria.ModLoader.ModContent;
+using AncientRealms.Common.Systems;
 
 namespace AncientRealms.Content.Bosses.GateKeeper
 {
@@ -76,7 +77,10 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             // npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<GateKeeperTreasureBag>())); (Todo: Add treasure bag drop rule when we have a treasure bag item)
         }
 
-        
+        public void OnKill()
+		{
+			NPC.SetEventFlagCleared(ref BossDownedSystem.downedGateKeeper, -1);
+		}
 
         //Used for the various differing passive animations of the different forms
 		/*private void SetFrameX(int frame)
