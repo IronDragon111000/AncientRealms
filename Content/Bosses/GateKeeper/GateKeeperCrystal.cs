@@ -72,7 +72,8 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                         }
                 }
             }
-            if(stunnedTimer > 0)            {
+            if(stunnedTimer > 0)            
+            {
                 stunnedTimer--;
                 if(stunnedTimer == 0)
                 {
