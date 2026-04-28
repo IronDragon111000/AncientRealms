@@ -273,7 +273,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 			{
 				case 0: break;
 				case 1: CrystalSmash(); break;
-				case 2: if(AttackTimer > 180){AttackTimer = 0;}break;
+				case 2: LaserSpin(); break;
 				case 3: break;
 				case 4: break;
 			}
@@ -349,6 +349,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 				NPC CrystalNPC = NPC.NewNPCDirect(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<GateKeeperCrystal>(), NPC.whoAmI);
 				GateKeeperCrystal Crystal = CrystalNPC.ModNPC as GateKeeperCrystal;
 				Crystal.parent = this;
+				Crystal.HomePosition = arena.Center.ToVector2() + new Vector2(0, 100f).RotatedBy(MathHelper.ToRadians(360/minionCount * i));
 				Crystals.Add(Crystal);
 				CrystalsTotalMaxHealth += CrystalNPC.lifeMax;
 
