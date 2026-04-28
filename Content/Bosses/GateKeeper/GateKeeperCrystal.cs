@@ -22,8 +22,10 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         public GateKeeper parent;
 
         public Vector2 TargetPosition;
+        public Vector2 HomePosition;
 
         public bool targetSet = false;
+        public Player targetPlayer;
         public int stunnedTimer = 0;
         public bool IsSmashing = false;
 
@@ -79,6 +81,11 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 {
                     NPC.defense = 1000;
                 }
+            }
+
+            if(!IsSmashing && stunnedTimer <= 0)
+            {
+                NPC.velocity = Vector2.Normalize(NPC.Center - HomePosition) * 4f; 
             }
 
             if(parent is null || !parent.NPC.active)

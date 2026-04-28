@@ -17,22 +17,21 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 {
     public sealed partial class GateKeeper : ModNPC
     {
-        // Attack Damage for Phase 1 attacks
+        public Vector2 AttackDirection;
+        public List<GateKeeperLaser> Lasers = new List<GateKeeperLaser>();
+
+        // Attack Damage for attacks
         public int CrystalSmashDamage = 20;
         public int CrystalSmashProjectileDamage = 10;
-        // Attack Damage for Phase 2 attacks
         public int LaserSpinDamage = 25;
-        // Attack Damage for Phase 3 attacks
         public int LaserConvergeDamage = 25;
 
         //How long before an attack starts - exists to give players time to setup for next attack
         public float AttackDelay = 60f;
-        // Telegraph Lengths for Phase 1 attacks
+        // Telegraph Lengths for attacks
         public float CrystalSmashTelegraphLength = 45f;
         public float CrystalSmashProjectileTelegraphLength = 20f;
-        // TelegraphLengths for Phase 2 attacks
         public float LaserSpinTelegraphLength = 80f;
-        // TelegraphLengths for Phase 3 attacks
         public float LaserConvergeTelegraphLength = 60f;
 
         public void ResetAttack()
@@ -61,23 +60,22 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 			NPC.netUpdate = true;
 		}
 
-        //Phase 1 Attacks
+        private void ClosestTarget()
+        {
+            NPC.target = null;
+            foreach (Player player in Main.player.Where(n => n.active && !n.dead && parent.arena.Contains(n.Center.ToPoint())))
+            {
+                if(target == null || Vector2.Distance(player.Center, NPC.Center) < Vector2.Distance(NPC.target, NPC.Center))
+                {
+                    NPC.target = player;
+                }
+            }
+        }
+
         private void CrystalSmash()
         {
-            if(AttackTimer < 150){
-                for(int i= 0; i < Crystals.Count; i++)
-                {
-                    if(Crystals[i] != null && Crystals[i].NPC.active)
-                    {
-                        Vector2 endPos = arena.Center.ToVector2() + new Vector2(0, 100f).RotatedBy(MathHelper.ToRadians(360/Crystals.Count * i));
-                        if(Crystals[i].NPC.Center != endPos){
-                            Crystals[i].NPC.velocity = Vector2.Normalize(endPos - Crystals[i].NPC.Center) * 4.5f;
-                        } else {
-                            Crystals[i].NPC.velocity = Vector2.Zero;
-                        }
-                    }
-                }
-            } else {
+            if(AttackTimer >= 150)
+            {
                 for(int i= 0; i < Crystals.Count; i++)
                 {
                     if(Crystals[i] != null && Crystals[i].NPC.active)
@@ -99,22 +97,66 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             }
         }
 
-        //Phase 2 Attacks
-        private void LaserSpin()
+        private void CrystalArcRing()
         {
-            if(AttackTimer < AttackDelay){
-                
-            } else if (AttackTimer == AttackDelay){
-                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(4, 0), Vector2.Zero, ProjectileType<GateKeeperLaser>(), LaserSpinDamage, 0, Main.myPlayer, 0, 0);
-            } else if(AttackTimer < AttackDelay + 150){
-
-            } else {
-                ResetAttack();
-            }
-
+            
         }
 
-        //Phase 3 Attacks
+        private void LaserSpin()
+        {
+            if(AttackTimer == AttackDelay)
+            {
+                ClosestTarget()
+                AttackDirection = Vector2.Normalize(NPC.target.Center - NPC.Center);
+                Lasers.Add(Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, AttackDirection, ModContent.ProjectileType<GateKeeperLaser>(), LaserSpinDamage, NPC.knockBack, 0, 0, 0) as GateKeeperLaser);
+                Lasers[0].source = this;
+            }
+            if(AttackTimer > AttackDelay)
+            {
+                //Adjust aim
+                float AimSpeed = MathHelper.ToRadians(0.75f);
+                // Get the player's current aiming direction as a normalized vector.
+                Vector2 aim = Vector2.Normalize(NPC.target.Center - NPC.Center);
+                if (aim.HasNaNs()) {
+                    aim = -Vector2.UnitY;
+                }
+
+                // Calculate current and target angles
+                float currentAngle = AttackDirection.ToRotation();
+                float targetAngle = aim.ToRotation();
+
+                // Get the smallest angle difference
+                float angleDiff = MathHelper.WrapAngle(targetAngle - currentAngle);
+
+                // Rotate by a constant amount towards the target, clamped to max speed
+                float turnAmount = MathHelper.Clamp(angleDiff, -AimSpeed, AimSpeed);
+                float newAngle = currentAngle + turnAmount;
+
+                // Set new AttackDirection
+                AttackDirection = newAngle.ToRotationVector2();
+
+                if (Projectile.AttackDirection != aim) {
+                    Projectile.netUpdate = true;
+                }
+
+                // Update the Laser Projectile
+                Lasers[0].velocity = Vector2.Normalize(AttackDirection);
+                if(AttackTimer > AttackDelay + LaserSpinTelegraphLength)
+                    Lasers[0].Tell = false;
+
+                //End Attack
+                if(AttackTimer > AttackDelay + LaserSpinTelegraphLength + 200)
+                {
+                    ResetAttack();
+                    for(int i = 0; i < Lasers.Count; i++)
+                    {
+                        Lasers[i].active = false;
+                    }
+                    Lasers = New List<GateKeeperLaser>();
+                }
+            }
+        }
+
         private void LaserConverge()
         {
             if(AttackTimer < AttackDelay){
