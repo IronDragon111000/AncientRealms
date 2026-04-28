@@ -148,8 +148,8 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 //on spawn effects
 				case (int)AIStates.SpawnEffects:
 
-					const int arenaWidth = 2000;
-					const int arenaHeight = 5000;
+					const int arenaWidth = 1600;
+					const int arenaHeight = 1000;
 					arena = new Rectangle((int)NPC.Center.X  - arenaWidth / 2, (int)NPC.Center.Y - arenaHeight / 2, arenaWidth, arenaHeight);
 
 					ChangePhase(AIStates.SpawnAnimation, true);
@@ -209,10 +209,10 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 			justRecievedPacket = false; //at end of frame set to no longer just recieved
 
 			//Dust perimeter of the arena
-			Dust.QuickDustLine(arena.TopRight(), arena.TopLeft(), 0.5f, Color.Purple);
-			Dust.QuickDustLine(arena.TopLeft(), arena.BottomLeft(), 0.5f, Color.Purple);
-			Dust.QuickDustLine(arena.BottomLeft(), arena.BottomRight(), 0.5f, Color.Purple);
-			Dust.QuickDustLine(arena.BottomRight(), arena.TopRight(), 0.5f, Color.Purple);
+			Dust.QuickDustLine(arena.TopRight(), arena.TopLeft(), arenaWidth/20, Color.Purple);
+			Dust.QuickDustLine(arena.TopLeft(), arena.BottomLeft(), arenaHeight/20, Color.Purple);
+			Dust.QuickDustLine(arena.BottomLeft(), arena.BottomRight(), arenaWidth/20, Color.Purple);
+			Dust.QuickDustLine(arena.BottomRight(), arena.TopRight(), arenaHeight/20, Color.Purple);
 
         }
         public override void FindFrame(int frameHeight)

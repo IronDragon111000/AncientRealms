@@ -18,22 +18,22 @@ namespace AncientRealms.Content.Bosses.GateKeeper
     public sealed partial class GateKeeper : ModNPC
     {
         // Attack Damage for Phase 1 attacks
-        public static int CrystalSmashDamage = 20;
-        public static int CrystalSmashProjectileDamage = 10;
+        public int CrystalSmashDamage = 20;
+        public int CrystalSmashProjectileDamage = 10;
         // Attack Damage for Phase 2 attacks
-        public static int LaserSpinDamage = 25;
+        public int LaserSpinDamage = 25;
         // Attack Damage for Phase 3 attacks
-        public static int LaserConvergeDamage = 25;
+        public int LaserConvergeDamage = 25;
 
         //How long before an attack starts - exists to give players time to setup for next attack
-        public static float AttackDelay = 60f;
+        public float AttackDelay = 60f;
         // Telegraph Lengths for Phase 1 attacks
-        public static float CrystalSmashTelegraphLength = 45f;
-        public static float CrystalSmashProjectileTelegraphLength = 20f;
+        public float CrystalSmashTelegraphLength = 45f;
+        public float CrystalSmashProjectileTelegraphLength = 20f;
         // TelegraphLengths for Phase 2 attacks
-        public static float LaserSpinTelegraphLength = 80f;
+        public float LaserSpinTelegraphLength = 80f;
         // TelegraphLengths for Phase 3 attacks
-        public static float LaserConvergeTelegraphLength = 60f;
+        public float LaserConvergeTelegraphLength = 60f;
 
         public void ResetAttack()
 		{
@@ -64,14 +64,17 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         //Phase 1 Attacks
         private void CrystalSmash()
         {
-            if(AttackTimer < AttackDelay){
+            if(AttackTimer < 150){
                 for(int i= 0; i < Crystals.Count; i++)
                 {
                     if(Crystals[i] != null && Crystals[i].NPC.active)
                     {
-                        Vector2 endPos = arena.Center.ToVector2() + new Vector2(0, arenaHeight/2).RotatedBy(MathHelper.ToRadians(360/Crystals.Count * i));
-                        
-                        Crystals[i].NPC.velocity = Vector2.Normalize(endPos - Crystals[i].NPC.Center) * 1f;
+                        Vector2 endPos = arena.Center.ToVector2() + new Vector2(0, 100f).RotatedBy(MathHelper.ToRadians(360/Crystals.Count * i));
+                        if(Crystals[i].NPC.Center != endPos){
+                            Crystals[i].NPC.velocity = Vector2.Normalize(endPos - Crystals[i].NPC.Center) * 4.5f;
+                        } else {
+                            Crystals[i].NPC.velocity = Vector2.Zero;
+                        }
                     }
                 }
             } else {
@@ -79,10 +82,11 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 {
                     if(Crystals[i] != null && Crystals[i].NPC.active)
                     {
-                        if(AttackTimer < AttackDelay + CrystalSmashTelegraphLength * (i + 1))
+                        if(AttackTimer < 150 + CrystalSmashTelegraphLength * (i + 1))
                         {
-                            Crystals[i].NPC.rotation += 0.1f;
-                        } else if (AttackTimer == AttackDelay + CrystalSmashTelegraphLength * (i + 1))
+                            Crystals[i].NPC.velocity = Vector2.Zero;
+                            Crystals[i].NPC.rotation += 0.3f;
+                        } else if (AttackTimer == 150 + CrystalSmashTelegraphLength * (i + 1))
                         {
                             Crystals[i].SmashAttack();
                         }

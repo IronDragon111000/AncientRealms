@@ -56,15 +56,20 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         {
             if(IsSmashing)
             {
-                Vector2 direction = Vector2.Normalize(TargetPosition - NPC.Center);
-                NPC.velocity = direction * 15f;
-                if (Vector2.Distance(NPC.Center, TargetPosition) < 20f)
+                NPC.rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2;
+                if (NPC.Center.Y > parent.arena.Bottom - 20 || NPC.Center.Y < parent.arena.Top + 20 || NPC.Center.X < parent.arena.Left + 20 || NPC.Center.X > parent.arena.Right - 20)
                 {
                     NPC.defense = stunnedDefence;
                     stunnedTimer = 180;
                     IsSmashing = false;
                     targetSet = false;
                     NPC.velocity = Vector2.Zero;
+                    if(Main.expertMode)
+                        for(int i = 0; i < 8; i++)
+                        {
+                            Projectile shard = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center, Vector2.UnitX.RotatedBy(MathHelper.Pi / 4 * i), ProjectileType<GateKeeperCrystalShard>(), 12, 12f);
+                            shard.damage = parent.CrystalSmashProjectileDamage;
+                        }
                 }
             }
             if(stunnedTimer > 0)            {
@@ -73,6 +78,12 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 {
                     NPC.defense = 1000;
                 }
+            }
+
+            if(parent is null || !parent.NPC.active)
+            {
+                NPC.active = false;
+                return;
             }
         }
 
@@ -102,17 +113,9 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                         targetSet = true;
                     }
                 }
-                float angle = (NPC.Center - TargetPosition).ToRotation();
-                angle += MathHelper.Pi;
-                if (angle > MathHelper.TwoPi) {
-				    angle -= MathHelper.TwoPi;
-                }
-                else if (angle < 0) {
-                                angle += MathHelper.TwoPi;
-                }
-
-                TargetPosition += angle.ToRotationVector2() * 100f;
             }
+            Vector2 direction = Vector2.Normalize(TargetPosition - NPC.Center);
+                NPC.velocity = direction * 15f;
 
             IsSmashing = true;
         }
