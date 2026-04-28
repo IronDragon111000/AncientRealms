@@ -13,6 +13,8 @@ using Terraria.ModLoader;
 using System.Linq;
 using static Terraria.ModLoader.ModContent;
 using AncientRealms.Common.Systems;
+using AncientRealms.Content.Bosses.GateKeeper;
+using Terraria.Graphics.Effects;
 
 namespace AncientRealms.Content.Bosses.GateKeeper
 {
@@ -33,7 +35,9 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 		private float prevAttackPhase = 0;
         public int fleeTimer;
 
-        public Rectangle arena;
+		public int CrystalsTotalMaxHealth { get; set;} //used for the health bar to show the combined health of the crystals and the core
+		public int CrystalsCurrentHealth ;
+		public Rectangle arena;
 		const int arenaWidth = 1280;
 		const int arenaHeight = 884;
 
@@ -66,6 +70,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             Main.npcFrameCount[NPC.type] = 81; 
             NPC.frame.Width = 140; 
             NPC.frame.Height = 140; 
+			NPC.BossBar = ModContent.GetInstance<GateKeeperBossBar>();
 
 
         }
@@ -81,7 +86,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             // npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<GateKeeperTreasureBag>())); (Todo: Add treasure bag drop rule when we have a treasure bag item)
         }
 
-        public void OnKill()
+        public override void OnKill()
 		{
 			NPC.SetEventFlagCleared(ref BossDownedSystem.downedGateKeeper, -1);
 		}
@@ -102,7 +107,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 		{
 			Phase = (int)phase;
 			if (resetTime)
-				GlobalTimer = 0;
+				AttackTimer = 0;
 		}
 
         public enum AIStates
@@ -143,8 +148,8 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 //on spawn effects
 				case (int)AIStates.SpawnEffects:
 
-					const int arenaWidth = 1280;
-					const int arenaHeight = 884;
+					const int arenaWidth = 2000;
+					const int arenaHeight = 5000;
 					arena = new Rectangle((int)NPC.Center.X  - arenaWidth / 2, (int)NPC.Center.Y - arenaHeight / 2, arenaWidth, arenaHeight);
 
 					ChangePhase(AIStates.SpawnAnimation, true);
@@ -179,7 +184,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 
                 case (int)AIStates.Dying:
                     //DeathAnimation();
-                    break;
+                    break;	
             }
 
             if (Main.netMode == NetmodeID.Server)
@@ -202,6 +207,12 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 
 			prevTickGlobalTimer = GlobalTimer; //potentially just shifted so we store the previous value in case of fastforwarding
 			justRecievedPacket = false; //at end of frame set to no longer just recieved
+
+			//Dust perimeter of the arena
+			Dust.QuickDustLine(arena.TopRight(), arena.TopLeft(), 0.5f, Color.Purple);
+			Dust.QuickDustLine(arena.TopLeft(), arena.BottomLeft(), 0.5f, Color.Purple);
+			Dust.QuickDustLine(arena.BottomLeft(), arena.BottomRight(), 0.5f, Color.Purple);
+			Dust.QuickDustLine(arena.BottomRight(), arena.TopRight(), 0.5f, Color.Purple);
 
         }
         public override void FindFrame(int frameHeight)
@@ -240,25 +251,42 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 
 		private void FirstPhase()
 		{
+			NPC.dontTakeDamage = true;
+
+			CrystalsCurrentHealth = 0;
+			foreach (GateKeeperCrystal Crystal in Crystals)
+			{
+				if (Crystal != null && Crystal.NPC.active)
+				{
+					CrystalsCurrentHealth += Crystal.NPC.life;
+				}
+			}
+
 			if (AttackTimer == 1) //switching out attacks
 			{
 				AttackPhase++;
-				if (AttackPhase > 0)
-				AttackPhase = 0;
+				if (AttackPhase > 2)
+				AttackPhase = 1;
 			}
 
             switch (AttackPhase) //Attacks
 			{
 				case 0: break;
-				case 1: break;
-				case 2: break;
+				case 1: CrystalSmash(); break;
+				case 2: if(AttackTimer > 180){AttackTimer = 0;}break;
 				case 3: break;
 				case 4: break;
+			}
+
+			if (CrystalsCurrentHealth <= 0)
+			{
+				ChangePhase(AIStates.SecondPhase, true);
 			}
 		}
 
 		private void SecondPhase()
 		{
+			NPC.dontTakeDamage = false;
 			if (AttackTimer == 1) //switching out attacks
 			{
 				AttackPhase++;
@@ -314,18 +342,19 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 				// This means we also have to sync it after we spawned and set up the minion
 				return;
 			}
-
-			int CrystalsTotalMaxHealth = 0;
+			
+			CrystalsTotalMaxHealth = 0;
 			for(int i = 0; i < minionCount; i++)
 			{
-				GateKeeperCrystal Crystal = NPC.NewNPCDirect(entitySource, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<GateKeeperCrystal>(), NPC.whoAmI);
+				NPC CrystalNPC = NPC.NewNPCDirect(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<GateKeeperCrystal>(), NPC.whoAmI);
+				GateKeeperCrystal Crystal = CrystalNPC.ModNPC as GateKeeperCrystal;
+				Crystal.parent = this;
 				Crystals.Add(Crystal);
-				CrystalsTotalMaxHealth += Crystal.lifeMax;
-				Crystal.parent = NPC.GetSource_FromThis;
+				CrystalsTotalMaxHealth += CrystalNPC.lifeMax;
 
 				// Finally, syncing, only sync on server and if the NPC actually exists (Main.maxNPCs is the index of a dummy NPC, there is no point syncing it)
 				if (Main.netMode == NetmodeID.Server) {
-					NetMessage.SendData(MessageID.SyncNPC, number: Crystal.whoAmI);
+					NetMessage.SendData(MessageID.SyncNPC, number: CrystalNPC.whoAmI);
 				}
 			}
 

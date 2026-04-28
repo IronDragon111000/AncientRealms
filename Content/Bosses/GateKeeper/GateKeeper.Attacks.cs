@@ -65,11 +65,33 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         private void CrystalSmash()
         {
             if(AttackTimer < AttackDelay){
-
-            } else if(AttackTimer < AttackDelay + CrystalSmashTelegraphLength){
-                
+                for(int i= 0; i < Crystals.Count; i++)
+                {
+                    if(Crystals[i] != null && Crystals[i].NPC.active)
+                    {
+                        Vector2 endPos = arena.Center.ToVector2() + new Vector2(0, arenaHeight/2).RotatedBy(MathHelper.ToRadians(360/Crystals.Count * i));
+                        
+                        Crystals[i].NPC.velocity = Vector2.Normalize(endPos - Crystals[i].NPC.Center) * 1f;
+                    }
+                }
             } else {
-
+                for(int i= 0; i < Crystals.Count; i++)
+                {
+                    if(Crystals[i] != null && Crystals[i].NPC.active)
+                    {
+                        if(AttackTimer < AttackDelay + CrystalSmashTelegraphLength * (i + 1))
+                        {
+                            Crystals[i].NPC.rotation += 0.1f;
+                        } else if (AttackTimer == AttackDelay + CrystalSmashTelegraphLength * (i + 1))
+                        {
+                            Crystals[i].SmashAttack();
+                        }
+                    }
+                }
+            } 
+            if(AttackTimer > AttackDelay + CrystalSmashTelegraphLength * Crystals.Count + 120)
+            {
+                ResetAttack();
             }
         }
 

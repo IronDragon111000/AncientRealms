@@ -72,8 +72,10 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 				FindParent();
 
 			if (parent is null)
+			{
+				Projectile.Kill();
 				return;
-
+			}
 			Timer++;
 			Projectile.timeLeft = 2;
 
@@ -92,8 +94,6 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 					Vector2 vel = pos.DirectionTo(Projectile.Center).RotatedBy(MathHelper.Pi / 2.2f * Main.rand.NextFloatDirection()) * Main.rand.NextFloat(5f);
 					
 				}
-
-				Projectile.scale = Math.Min(1, Timer / 60f);
 			}
 
 			if (Timer > 120)
@@ -152,10 +152,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 
 			if (Timer > 500 || parent.Phase == (int)GateKeeper.AIStates.Dying || parent.Phase == (int)GateKeeper.AIStates.Leaving)
 			{
-				Projectile.scale -= 0.05f;
-
-				if (Projectile.scale <= 0)
-					Projectile.active = false;
+				Projectile.Kill();	
 			}
 		}
 
@@ -187,14 +184,28 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 			return false;
 		}
 
-		private void DrawBeam(SpriteBatch spriteBatch, Texture2D texture, Vector2 startPosition, Vector2 endPosition, Vector2 drawScale, Color beamColor) {
-			Utils.LaserLineFraming lineFraming = new Utils.LaserLineFraming(DelegateMethods.RainbowLaserDraw);
+		private void DrawBeam(SpriteBatch spriteBatch, Texture2D texture, Vector2 startPosition, Vector2 endPosition, Vector2 drawScale, Color beamColor, int frameOffset = 0) {
+			Utils.LaserLineFraming lineFraming = (int stage, Vector2 currentPosition, float distanceLeft, Rectangle lastFrame, out float distCovered, out Rectangle frame, out Vector2 origin, out Color color) =>
+			{
+				distCovered = drawScale.X;
+				int y = frameOffset;
+				frame = new Rectangle(0, y + frameOffset, texture.Width, texture.Height + frameOffset);
+				origin = new Vector2(texture.Width / 2f, frameOffset);
+				color = beamColor;
+			};
 
 			// c_1 is an unnamed decompiled variable which is the render color of the beam drawn by DelegateMethods.RainbowLaserDraw.
 			DelegateMethods.c_1 = beamColor;
-			Utils.DrawLaser(spriteBatch, texture, startPosition, endPosition, drawScale, lineFraming);
+			
+			// Create a texture that represents just the current frame
+			Rectangle frameRect = new Rectangle(0, frameOffset, texture.Width, texture.Height / Main.projFrames[Type]);
+			Texture2D frameTexture = new Texture2D(Main.graphics.GraphicsDevice, frameRect.Width, frameRect.Height);
+			Color[] data = new Color[frameRect.Width * frameRect.Height];
+			texture.GetData(0, frameRect, data, 0, data.Length);
+			frameTexture.SetData(data);
+			
+			Utils.DrawLaser(spriteBatch, frameTexture, startPosition, endPosition, drawScale, lineFraming);
 		}
-
 		private Color GetOuterBeamColor() {
 			// This hue calculation produces a unique color for each beam based on its Beam ID.
 			float hue = BeamColorHue;
