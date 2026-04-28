@@ -35,7 +35,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
             NPC.noGravity = true;
             NPC.noTileCollide = true;
             NPC.aiStyle = -1;
-            NPC.knockBackResist = 0.1f; 
+            NPC.knockBackResist = 0.8f; 
             Main.npcFrameCount[NPC.type] = 1; 
             NPC.frame.Width = 44; 
             NPC.frame.Height = 45; 
@@ -50,7 +50,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
                 NPC.velocity = Vector2.Normalize(NPC.Center) * 0.1f;
                 return;
             }
-            if(speed <= 10f)
+            if(speed <= 15f)
                 speed += 0.1f;
             UpdateAim(NPC.Center, turningPower, speed);
         }

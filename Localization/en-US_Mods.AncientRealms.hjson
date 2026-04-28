@@ -35,4 +35,5 @@ Projectiles: {
 	EldritchVoidExplodingProjectile.DisplayName: Eldritch Void Exploding Projectile
 	EldritchVoidTeleportVolleyProjectile.DisplayName: Eldritch Void Teleport Volley Projectile
 	GateKeeperCrystalShard.DisplayName: Gate Keeper Crystal Shard
+	GateKeeperCrystalLaser.DisplayName: Gate Keeper Crystal Laser
 }
