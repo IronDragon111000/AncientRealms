@@ -18,6 +18,7 @@ using Terraria.Graphics.Effects;
 
 namespace AncientRealms.Content.Bosses.GateKeeper
 {
+	[AutoloadBossHead]
     public sealed partial class GateKeeper : ModNPC
     {
         internal ref float GlobalTimer => ref NPC.ai[0];
@@ -40,8 +41,6 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 		public Rectangle arena;
 		const int arenaWidth = 1280;
 		const int arenaHeight = 884;
-
-		public override string Texture => "AncientRealms/Content/Bosses/GateKeeper/GateKeeperCore";
 
          public Color glowColor = Color.Transparent;
 
