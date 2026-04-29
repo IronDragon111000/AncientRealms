@@ -44,7 +44,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             NPC.aiStyle = -1;
 
             NPC.damage = 25;
-            NPC.lifeMax = 350;
+            NPC.lifeMax = 250;
             NPC.defense = 1000; //This is the defence unless it is stunned
             NPC.friendly = false;
         }
@@ -62,7 +62,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 if (NPC.Center.Y > parent.arena.Bottom - 20 || NPC.Center.Y < parent.arena.Top + 20 || NPC.Center.X < parent.arena.Left + 20 || NPC.Center.X > parent.arena.Right - 20)
                 {
                     NPC.defense = stunnedDefence;
-                    stunnedTimer = 180;
+                    stunnedTimer = 220;
                     IsSmashing = false;
                     targetSet = false;
                     NPC.velocity = Vector2.Zero;
@@ -81,11 +81,17 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 {
                     NPC.defense = 1000;
                 }
+                NPC.velocity = Vector2.Zero;
             }
 
             if(!IsSmashing && stunnedTimer <= 0)
             {
-                NPC.velocity = Vector2.Normalize(NPC.Center - HomePosition) * 4f; 
+                if(NPC.Center.Distance(HomePosition) > 5)
+                {
+                    NPC.velocity = Vector2.Normalize(HomePosition - NPC.Center) * 4f; 
+                } else                {
+                    NPC.velocity = Vector2.Zero;
+                }
             }
 
             if(parent is null || !parent.NPC.active)
@@ -93,6 +99,11 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 NPC.active = false;
                 return;
             }
+        }
+
+        public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+        {
+            NPC.lifeMax = (int)(250 + (50 * balance)); 
         }
 
         public override void FindFrame(int frameHeight)

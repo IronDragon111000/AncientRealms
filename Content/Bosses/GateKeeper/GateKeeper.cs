@@ -57,7 +57,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             NPC.height = 130;
             NPC.damage = 25;
             NPC.defense = 20;
-            NPC.lifeMax = 2500;
+            NPC.lifeMax = 2000;
             NPC.HitSound = SoundID.NPCHit1;
             NPC.DeathSound = SoundID.NPCDeath1;
             NPC.noGravity = true;

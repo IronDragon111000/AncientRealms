@@ -31,9 +31,14 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         // Telegraph Lengths for attacks
         public float CrystalSmashTelegraphLength = 45f;
         public float CrystalSmashProjectileTelegraphLength = 20f;
-        public float LaserSpinTelegraphLength = 80f;
+        public float LaserSpinTelegraphLength = 120f;
         public float LaserConvergeTelegraphLength = 60f;
 
+        public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+        {
+            NPC.damage *= (int)balance;
+			NPC.lifeMax = (int)(2000 + (1000 * balance));
+        }
         public void ResetAttack()
 		{
 			AttackTimer = 0;
@@ -62,14 +67,17 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 
         private void ClosestTarget()
         {
-            NPC.target = null;
-            foreach (Player player in Main.player.Where(n => n.active && !n.dead && parent.arena.Contains(n.Center.ToPoint())))
+            Player target = null;
+            foreach (Player player in Main.player.Where(n => n.active && !n.dead && arena.Contains(n.Center.ToPoint())))
             {
-                if(target == null || Vector2.Distance(player.Center, NPC.Center) < Vector2.Distance(NPC.target, NPC.Center))
+                if(target == null || Vector2.Distance(player.Center, NPC.Center) < Vector2.Distance(target.Center, NPC.Center))
                 {
-                    NPC.target = player;
+                    target = player;
                 }
             }
+
+            NPC.target = target.whoAmI;
+            NPC.netUpdate = true;
         }
 
         private void CrystalSmash()
@@ -91,7 +99,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                     }
                 }
             } 
-            if(AttackTimer > AttackDelay + CrystalSmashTelegraphLength * Crystals.Count + 120)
+            if(AttackTimer > AttackDelay + CrystalSmashTelegraphLength * Crystals.Count + 240)
             {
                 ResetAttack();
             }
@@ -106,17 +114,18 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         {
             if(AttackTimer == AttackDelay)
             {
-                ClosestTarget()
-                AttackDirection = Vector2.Normalize(NPC.target.Center - NPC.Center);
-                Lasers.Add(Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, AttackDirection, ModContent.ProjectileType<GateKeeperLaser>(), LaserSpinDamage, NPC.knockBack, 0, 0, 0) as GateKeeperLaser);
+                ClosestTarget();
+                AttackDirection = Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center);
+                Projectile laser = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, AttackDirection, ModContent.ProjectileType<GateKeeperLaser>(), LaserSpinDamage, 1, 0, 0, 0);
+                Lasers.Add(laser.ModProjectile as GateKeeperLaser);
                 Lasers[0].source = this;
             }
             if(AttackTimer > AttackDelay)
             {
                 //Adjust aim
-                float AimSpeed = MathHelper.ToRadians(0.75f);
+                float AimSpeed = MathHelper.ToRadians(0.67f);
                 // Get the player's current aiming direction as a normalized vector.
-                Vector2 aim = Vector2.Normalize(NPC.target.Center - NPC.Center);
+                Vector2 aim = Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center);
                 if (aim.HasNaNs()) {
                     aim = -Vector2.UnitY;
                 }
@@ -135,12 +144,12 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 // Set new AttackDirection
                 AttackDirection = newAngle.ToRotationVector2();
 
-                if (Projectile.AttackDirection != aim) {
-                    Projectile.netUpdate = true;
+                if (AttackDirection != aim) {
+                    NPC.netUpdate = true;
                 }
 
                 // Update the Laser Projectile
-                Lasers[0].velocity = Vector2.Normalize(AttackDirection);
+                Lasers[0].Projectile.velocity = Vector2.Normalize(AttackDirection);
                 if(AttackTimer > AttackDelay + LaserSpinTelegraphLength)
                     Lasers[0].Tell = false;
 
@@ -150,9 +159,9 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                     ResetAttack();
                     for(int i = 0; i < Lasers.Count; i++)
                     {
-                        Lasers[i].active = false;
+                        Lasers[i].Projectile.active = false;
                     }
-                    Lasers = New List<GateKeeperLaser>();
+                    Lasers = new List<GateKeeperLaser>();
                 }
             }
         }

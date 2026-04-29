@@ -22,7 +22,7 @@ using Terraria.ModLoader.Core;
 using static Terraria.ModLoader.Core.TmodFile;
 namespace AncientRealms.Content.Bosses.GateKeeper
 {
-    public class GateKeeperCrystalLaser : ModProjectile
+    public class GateKeeperLaser : ModProjectile
     {
         private float laserLength = 2000f;
         private Vector2 endPoint = Vector2.Zero;
@@ -35,8 +35,8 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 		}
         public override void SetDefaults()
         {
-            Projectile.width = 72;
-            Projectile.height = 14;
+            Projectile.width = 26;
+            Projectile.height = 16;
             Projectile.penetrate = -1;
 			Projectile.tileCollide = false;
         }
@@ -51,7 +51,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             Projectile.Center = source.NPC.Center;
             endPoint = Projectile.Center + (Vector2.Normalize(Projectile.velocity) * laserLength);
 
-            if(!Tell)) // Laser is active
+            if(!Tell) // Laser is active
             {
                 for (int k = 0; k < Main.maxPlayers; k++) //laser collision
 				{
@@ -79,16 +79,15 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 			if(Tell) 
             {
 				spriteSheetOffset = frameHeight * 0;
-				DrawBeam(Main.spriteBatch, texture, startPosition, endPosition, drawScale, Color.Purple * 0.05f, spriteSheetOffset);
+				DrawBeam(Main.spriteBatch, texture, startPosition, endPosition, drawScale, Color.Purple * 0.02f, spriteSheetOffset);
 							
             } else // Laser is active
             {
 				spriteSheetOffset = frameHeight * 1;
-				// Draw the inner beam, which is half size.
-				DrawBeam(Main.spriteBatch, texture, startPosition, endPosition, drawScale * 0.7f, Color.White * Projectile.Opacity, spriteSheetOffset);
-
 				// Draw the outer beam.
-				DrawBeam(Main.spriteBatch, texture, startPosition, endPosition, drawScale, Color.Purple * Projectile.Opacity, spriteSheetOffset);
+				DrawBeam(Main.spriteBatch, texture, startPosition, endPosition, drawScale, Color.SkyBlue, spriteSheetOffset);
+				// Draw the inner beam, which is half size.
+				DrawBeam(Main.spriteBatch, texture, startPosition, endPosition, drawScale * 0.7f, Color.White * 0.5f, spriteSheetOffset);
             }
 			
 			return false;
@@ -100,7 +99,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 				distCovered = drawScale.X;
 				int y = frameOffset;
 				frame = new Rectangle(0, y + frameOffset, texture.Width, texture.Height + frameOffset);
-				origin = new Vector2(texture.Width / 2f, frameOffset);
+				origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
 				color = beamColor;
 			};
 
