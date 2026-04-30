@@ -25,7 +25,7 @@ namespace AncientRealms.Content.Items.Armor.Misc
 			Item.height = 18;
 			Item.value = Item.sellPrice(gold: 1);
 			Item.rare = ItemRarityID.Green;
-			Item.defense = 5;
+			Item.defense = 7;
         }
 
         public override void UpdateEquip(Player player)
@@ -41,11 +41,11 @@ namespace AncientRealms.Content.Items.Armor.Misc
 		public const int DashRight = 2;
 		public const int DashLeft = 3;
 
-        public const int DashCooldown = 50; 
-        public const int DashDuration = 35;
+        public const int DashCooldown = 35; 
+        public const int DashDuration = 30;
 
         // Initial Velocity of the dash
-        public const float DashVelocity = 10f;
+        public const float DashVelocity = 12f;
 
         // The direction the player has double tapped.  Defaults to -1 for no dash double tap
 		public int DashDir = -1;
