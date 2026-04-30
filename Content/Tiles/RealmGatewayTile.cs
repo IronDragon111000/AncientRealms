@@ -16,7 +16,7 @@ namespace AncientRealms.Content.Tiles
 {
     public class RealmGatewayTile : ModTile
     {
-        		public override string Texture => "AncientRealms/Content/Items/Placeable/RealmGateway"; // Use texture of item as tile texture
+        public override string Texture => "AncientRealms/Content/Items/Placeable/RealmGateway"; // Use texture of item as tile texture
 
         public override void SetStaticDefaults()
         {
