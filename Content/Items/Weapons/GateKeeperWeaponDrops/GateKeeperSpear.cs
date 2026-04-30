@@ -3,7 +3,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Audio;
 
-namespace AncientRealms.Content.Items.Weapons
+namespace AncientRealms.Content.Items.Weapons.GateKeeperWeaponDrops
 {
     public class GateKeeperSpear : ModItem
     {

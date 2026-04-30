@@ -3,7 +3,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 
-namespace AncientRealms.Content.Items.Weapons
+namespace AncientRealms.Content.Items.Weapons.GateKeeperWeaponDrops
 {
     public class GateKeeperBowArrow : ModProjectile
     {

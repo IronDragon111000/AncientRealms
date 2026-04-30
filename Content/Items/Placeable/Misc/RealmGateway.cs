@@ -4,7 +4,7 @@ using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace AncientRealms.Content.Items.Placeable
+namespace AncientRealms.Content.Items.Placeable.Misc
 {
 	public class RealmGateway : ModItem
 	{

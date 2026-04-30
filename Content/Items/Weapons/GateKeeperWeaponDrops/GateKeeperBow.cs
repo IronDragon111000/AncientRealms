@@ -2,10 +2,10 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
-using AncientRealms.Content.Items.Weapons;
+using AncientRealms.Content.Items.Weapons.GateKeeperWeaponDrops;
 using Terraria.DataStructures;
 
-namespace AncientRealms.Content.Items.Weapons
+namespace AncientRealms.Content.Items.Weapons.GateKeeperWeaponDrops
 {
     public class GateKeeperBow : ModItem
     {
