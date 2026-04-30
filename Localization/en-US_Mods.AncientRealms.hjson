@@ -23,6 +23,11 @@ Items: {
 		DisplayName: Gate Keeper Summon Pedistal
 		Tooltip: ""
 	}
+
+	RhinoHelm: {
+		Tooltip: ""
+		DisplayName: Rhino Helm
+	}
 }
 
 NPCs: {
@@ -44,4 +49,16 @@ Projectiles: {
 	EldritchVoidTeleportVolleyProjectile.DisplayName: Eldritch Void Teleport Volley Projectile
 	GateKeeperCrystalShard.DisplayName: Gate Keeper Crystal Shard
 	GateKeeperCrystalLaser.DisplayName: Gate Keeper Crystal Laser
+}
+
+Biomes: {
+	RealmGatewayBiome: {
+		DisplayName: Realm Gateway Biome
+		TownNPCDialogueName: the Realm Gateway Biome
+	}
+
+	VoidBiome: {
+		DisplayName: Void Biome
+		TownNPCDialogueName: the Void Biome
+	}
 }

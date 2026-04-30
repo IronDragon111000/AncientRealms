@@ -10,15 +10,13 @@ using Terraria.Map;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Default;
 using Terraria.ObjectData;
-using AncientRealms.Content.Bosses.GateKeeper;
-using Terraria.Audio;
-using StructureHelper.Models;
+using AncientRealms.Content.SubWorlds.SubSpaceHub;
 
-namespace AncientRealms.Content.Tiles
+namespace AncientRealms.Content.Tiles.Misc
 {
-    public class GateKeeperSummonPedistalTile : ModTile
+    public class RealmGatewayTile : ModTile
     {
-        public override string Texture => "AncientRealms/Content/Items/Placeable/GateKeeperSummonPedistal"; // Use texture of item as tile texture
+        public override string Texture => "AncientRealms/Content/Items/Placeable/Misc/RealmGateway"; // Use texture of item as tile texture
 
         public override void SetStaticDefaults()
         {
@@ -27,7 +25,7 @@ namespace AncientRealms.Content.Tiles
             Main.tileLavaDeath[Type] = true;
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
             TileObjectData.newTile.Height = 3;
-            TileObjectData.newTile.Width = 3;
+            TileObjectData.newTile.Width = 2;
             TileObjectData.addTile(Type);
             LocalizedText name = CreateMapEntryName();
             AddMapEntry(new Color(200, 200, 200), name);
@@ -38,19 +36,11 @@ namespace AncientRealms.Content.Tiles
 
         public override bool RightClick(int i, int j)
         {
-            
-            int type = ModContent.NPCType<GateKeeper>();
-            if(!NPC.AnyNPCs(type))
-            {
-                // If the player using the item is the client
-                // (explicitely excluded serverside here)
-                SoundEngine.PlaySound(SoundID.Roar, new Vector2(i,j));
-
-                StructureData data = StructureHelper.API.Generator.GetStructureData("Structures/GateKeeperArena", AncientRealms.Instance);
-                NPC.SpawnBoss(i* 16, (j - (data.height - 26) / 2) * 16, type, Main.myPlayer);
-                return true;
-            }
-            return false;
+            if(SubworldLibrary.SubworldSystem.IsActive<SubSpaceHub>())
+                SubworldLibrary.SubworldSystem.Exit();
+            else
+                SubworldLibrary.SubworldSystem.Enter<SubSpaceHub>();
+            return true;
         }
     }
 }

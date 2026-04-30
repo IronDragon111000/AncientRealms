@@ -1,8 +1,8 @@
-using AncientRealms.Content.Tiles;
+using AncientRealms.Content.Tiles.Misc;
 using Terraria.Enums;
 using Terraria.ModLoader;
 
-namespace AncientRealms.Content.Items.Placeable
+namespace AncientRealms.Content.Items.Placeable.Misc
 {
     public class GateKeeperSummonPedistal : ModItem
     {

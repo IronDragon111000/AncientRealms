@@ -1,9 +1,18 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using AncientRealms.Content.Tiles.Misc;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
-using static Terraria.ModLoader.ModContent;
+using Terraria.ModLoader.IO;
+using Terraria.ModLoader;
+using AncientRealms.Content.SubWorlds.SubSpaceHub;
+using Terraria;
+using Terraria.Localization;
+using Microsoft.Xna.Framework;
+using Terraria.Graphics.Capture;
 
 namespace AncientRealms.Content.Items.Armor.Misc
 {
@@ -19,7 +28,7 @@ namespace AncientRealms.Content.Items.Armor.Misc
 			Item.defense = 5;
         }
 
-        public override void UpdateEquip(Player Player)
+        public override void UpdateEquip(Player player)
 		{
 			player.GetModPlayer<RhinoArmorDash>().DashArmorEquipped = true;
 		}

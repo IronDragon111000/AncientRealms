@@ -48,9 +48,9 @@ namespace AncientRealms.Content.SubWorlds.SubSpaceHub
             private void GenerateFloatingIslands(GenerationProgress progress, GameConfiguration configuration)
             {
                 Vector2 spawnPoint = new Vector2(Main.spawnTileX , Main.spawnTileY);
-                for(int i = 0; i < main.maxTilesX; i++)
+                for(int i = 0; i < Main.maxTilesX; i++)
                 {
-                    for(int j = 0; j < main.maxTilesY; j++)
+                    for(int j = 0; j < Main.maxTilesY; j++)
                     {
                         Vector2 cords = new Vector2(i, j);
                         //check if near spawn if so dont place an island
@@ -77,33 +77,33 @@ namespace AncientRealms.Content.SubWorlds.SubSpaceHub
             public void GenerateIsland(int x, int y , int size)
             {
                 // large sized
-                int wid = Worldgen.genRand.Next(50, 74); 
+                int wid = WorldGen.genRand.Next(50, 74); 
                 int maxDepth = 28;
                 int minDepth = 18;
                 int maxDepthChange = 3;
                 int depth = 3;
-                if(size = 1) // mid sized
+                if(size == 1) // mid sized
                 {
-                    wid = Worldgen.genRand.Next(30,40);
+                    wid = WorldGen.genRand.Next(30,40);
                     maxDepth = 20;
                     minDepth = 10;
                     maxDepthChange = 2;
-                } else if(size = 0) // small sized
+                } else if(size == 0) // small sized
                 {
-                    wid = Worldgen.genRand.Next(8,16);
+                    wid = WorldGen.genRand.Next(8,16);
                     maxDepth = 6;
                     minDepth = 2;
                     maxDepthChange = 1;
                 }
                 for (int i = x - (int)(wid / 2f); i < x + wid / 2f; ++i)
                 {
-                    for(j = y; j < y + depth; j++)
+                    for(int j = y; j < y + depth; j++)
                     {
                         Tile tile = Main.tile[i, j];
                         tile.HasTile = true;
                         tile.TileType = TileID.Dirt;
                     }
-                    depth += Worldgen.genRand.Next(-maxDepthChange, maxDepthChange);
+                    depth += WorldGen.genRand.Next(-maxDepthChange, maxDepthChange);
                     if(depth > maxDepth)
                         depth = maxDepth;
                     if(depth < minDepth)

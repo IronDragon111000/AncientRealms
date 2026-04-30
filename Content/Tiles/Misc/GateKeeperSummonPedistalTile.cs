@@ -10,13 +10,15 @@ using Terraria.Map;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Default;
 using Terraria.ObjectData;
-using AncientRealms.Content.SubWorlds.SubSpaceHub;
+using AncientRealms.Content.Bosses.GateKeeper;
+using Terraria.Audio;
+using StructureHelper.Models;
 
-namespace AncientRealms.Content.Tiles
+namespace AncientRealms.Content.Tiles.Misc
 {
-    public class RealmGatewayTile : ModTile
+    public class GateKeeperSummonPedistalTile : ModTile
     {
-        public override string Texture => "AncientRealms/Content/Items/Placeable/RealmGateway"; // Use texture of item as tile texture
+        public override string Texture => "AncientRealms/Content/Items/Placeable/Misc/GateKeeperSummonPedistal"; // Use texture of item as tile texture
 
         public override void SetStaticDefaults()
         {
@@ -25,7 +27,7 @@ namespace AncientRealms.Content.Tiles
             Main.tileLavaDeath[Type] = true;
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
             TileObjectData.newTile.Height = 3;
-            TileObjectData.newTile.Width = 2;
+            TileObjectData.newTile.Width = 3;
             TileObjectData.addTile(Type);
             LocalizedText name = CreateMapEntryName();
             AddMapEntry(new Color(200, 200, 200), name);
@@ -36,11 +38,19 @@ namespace AncientRealms.Content.Tiles
 
         public override bool RightClick(int i, int j)
         {
-            if(SubworldLibrary.SubworldSystem.IsActive<SubSpaceHub>())
-                SubworldLibrary.SubworldSystem.Exit();
-            else
-                SubworldLibrary.SubworldSystem.Enter<SubSpaceHub>();
-            return true;
+            
+            int type = ModContent.NPCType<GateKeeper>();
+            if(!NPC.AnyNPCs(type))
+            {
+                // If the player using the item is the client
+                // (explicitely excluded serverside here)
+                SoundEngine.PlaySound(SoundID.Roar, new Vector2(i,j));
+
+                StructureData data = StructureHelper.API.Generator.GetStructureData("Structures/GateKeeperArena", AncientRealms.Instance);
+                NPC.SpawnBoss(i* 16, (j - (data.height - 26) / 2) * 16, type, Main.myPlayer);
+                return true;
+            }
+            return false;
         }
     }
 }

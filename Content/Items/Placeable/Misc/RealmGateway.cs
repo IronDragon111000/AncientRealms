@@ -1,4 +1,4 @@
-using AncientRealms.Content.Tiles;
+using AncientRealms.Content.Tiles.Misc;
 using Terraria;
 using Terraria.Enums;
 using Terraria.ID;
