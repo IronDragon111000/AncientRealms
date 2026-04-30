@@ -3,6 +3,7 @@ using SubworldLibrary;
 using Terraria.WorldBuilding;
 using System.Collections.Generic;
 using Terraria.ModLoader;
+using System.Reflection;
 
 using static Terraria.ModLoader.ModContent;
 using Microsoft.Xna.Framework;
@@ -11,19 +12,18 @@ using Terraria.GameContent;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
-using StructureHelper;
 using Terraria.DataStructures;
-using AncientRealms.Content.SubWorlds.SubSpaceHub;
-using AncientRealms.Content.SubWorlds.SubSpaceHub.Structures;
+using AncientRealms.Common.Systems;
+using StructureHelper.Models;
 
-namespace AncientRealms.SubWorlds.SubSpaceHub
+namespace AncientRealms.Content.SubWorlds.SubSpaceHub
 {
     public class SubSpaceHub : Subworld
     {
-        public class SubSpaceHubGenPass : ExampleGenPass
+        public class SubSpaceHubGenPass : GenPass
         {
 
-            public SubSpaceHubGenPass() : base("Terrain", 1f) { }
+            public SubSpaceHubGenPass() : base("Terrain", 1f) {}
             protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
             {
                 progress.Message = "Generating terrain"; // Sets the text displayed for this pass
@@ -39,6 +39,18 @@ namespace AncientRealms.SubWorlds.SubSpaceHub
                         tile.TileType = TileID.Dirt;
                     }
                 }
+
+                //Set defualt spawn position
+                //Main.spawnTileX
+
+                //Generate Structure
+                StructureData Enterance = StructureHelper.API.Generator.GetStructureData("Structures/enterance", AncientRealms.Instance);
+                StructureData GateKeeperArena = StructureHelper.API.Generator.GetStructureData("Structures/GateKeeperArena", AncientRealms.Instance);
+                Point16 GateKeeperArenaSpawn = new Point16(Main.spawnTileX -10 + Enterance.width,Main.spawnTileY -13 - GateKeeperArena.height + 1 + Enterance.height);
+                
+                StructureHelper.API.Generator.GenerateFromData(Enterance, new Point16(Main.spawnTileX -10, Main.spawnTileY -13));
+                StructureHelper.API.Generator.GenerateFromData(GateKeeperArena, GateKeeperArenaSpawn);
+                
             }
         }
         public override int Width => 2000;
@@ -50,11 +62,26 @@ namespace AncientRealms.SubWorlds.SubSpaceHub
             new SubSpaceHubGenPass()
         };
 
-	// Sets the time to the middle of the day whenever the subworld loads
-	public override void OnLoad()
-	{
-		Main.dayTime = true;
-		Main.time = 27000;
-	}
+        // Sets the time to the middle of the day whenever the subworld loads
+        public override void OnLoad()
+        {
+            Main.dayTime = true;
+            Main.time = 27000;
+        }
+
+        public override void CopyMainWorldData()
+        {
+            SubworldSystem.CopyWorldData(nameof(BossDownedSystem.downedEldritchVoid), BossDownedSystem.downedEldritchVoid);
+            SubworldSystem.CopyWorldData(nameof(BossDownedSystem.downedGateKeeper), BossDownedSystem.downedGateKeeper);
+
+        }
+
+        public override void ReadCopiedMainWorldData()
+        {
+            BossDownedSystem.downedGateKeeper = SubworldSystem.ReadCopiedWorldData<bool>(nameof(BossDownedSystem.downedGateKeeper));
+            BossDownedSystem.downedEldritchVoid = SubworldSystem.ReadCopiedWorldData<bool>(nameof(BossDownedSystem.downedEldritchVoid));
+
+            base.ReadCopiedMainWorldData();
+        }
     }
 }

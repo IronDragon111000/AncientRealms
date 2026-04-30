@@ -11,10 +11,10 @@
 	<!-- References -->
 	<ItemGroup>
 		<Reference Include="StructureHelper">
-			<HintPath>..\..\..\..\..\..\Desktop\Libs\StructureHelper.dll</HintPath>
+			<HintPath>lib\StructureHelper.dll</HintPath>
 		</Reference>
 		<Reference Include="SubworldLibrary">
-      	<HintPath>..\..\..\..\..\..\Desktop\Libs\SubworldLibrary.dll</HintPath>
+      	<HintPath>lib\SubworldLibrary.dll</HintPath>
     	</Reference>
 	</ItemGroup>
 

@@ -40,7 +40,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 		public int CrystalsCurrentHealth ;
 		public Rectangle arena;
 		const int arenaWidth = 1280;
-		const int arenaHeight = 884;
+		const int arenaHeight = 896;
 
          public Color glowColor = Color.Transparent;
 

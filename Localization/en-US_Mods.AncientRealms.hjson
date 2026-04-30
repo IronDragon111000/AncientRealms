@@ -1,4 +1,7 @@
-Tiles.RealmGatewayTile.MapEntry: Realm Gateway Tile
+Tiles: {
+	RealmGatewayTile.MapEntry: Realm Gateway Tile
+	GateKeeperSummonPedistalTile.MapEntry: Gate Keeper Summon Pedistal Tile
+}
 
 Items: {
 	RealmGateway: {
@@ -13,6 +16,11 @@ Items: {
 
 	GateKeeperSpear: {
 		DisplayName: Gate Keeper Spear
+		Tooltip: ""
+	}
+
+	GateKeeperSummonPedistal: {
+		DisplayName: Gate Keeper Summon Pedistal
 		Tooltip: ""
 	}
 }
