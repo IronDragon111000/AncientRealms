@@ -56,16 +56,16 @@ namespace AncientRealms.Content.SubWorlds.SubSpaceHub
                         //check if near spawn if so dont place an island
                         if(Vector2.Distance(spawnPoint, cords) > 200)
                         {
-                            int rand = WorldGen.genRand.Next(0, 1000);
-                            if(rand > 980)
+                            int rand = WorldGen.genRand.Next(0, 1000000);
+                            if(rand > 999985)
                             {
                                 LargeIslandLocations.Add(new Point16(i, j));
                                 GenerateIsland(i, j, 2);
-                            } else if(rand > 940)
+                            } else if(rand > 999900)
                             {
                                 MediumIslandLocations.Add(new Point16(i, j));
                                 GenerateIsland(i, j, 1);
-                            } else if (rand > 900)
+                            } else if (rand > 999750)
                             {
                                 SmallIslandLocations.Add(new Point16(i, j));
                                 GenerateIsland(i, j, 0);
@@ -77,24 +77,22 @@ namespace AncientRealms.Content.SubWorlds.SubSpaceHub
             public void GenerateIsland(int x, int y , int size)
             {
                 // large sized
-                int wid = WorldGen.genRand.Next(50, 74); 
-                int maxDepth = 28;
-                int minDepth = 18;
-                int maxDepthChange = 3;
-                int depth = 3;
+                int wid = WorldGen.genRand.Next(80, 100); 
+                int maxDepth = 50;
+                int minDepth = 20;
                 if(size == 1) // mid sized
                 {
                     wid = WorldGen.genRand.Next(30,40);
                     maxDepth = 20;
                     minDepth = 10;
-                    maxDepthChange = 2;
                 } else if(size == 0) // small sized
                 {
                     wid = WorldGen.genRand.Next(8,16);
                     maxDepth = 6;
                     minDepth = 2;
-                    maxDepthChange = 1;
                 }
+                int depth = minDepth;
+
                 for (int i = x - (int)(wid / 2f); i < x + wid / 2f; ++i)
                 {
                     for(int j = y; j < y + depth; j++)
@@ -106,7 +104,9 @@ namespace AncientRealms.Content.SubWorlds.SubSpaceHub
                             tile.TileType = TileID.Dirt;
                         }
                     }
-                    depth += WorldGen.genRand.Next(-maxDepthChange, maxDepthChange);
+                    int lowDepthChange = -(depth - minDepth) / 2;
+                    int highDepthChange= (maxDepth - depth) /2;
+                    depth += WorldGen.genRand.Next(lowDepthChange, highDepthChange);
                     if(depth > maxDepth)
                         depth = maxDepth;
                     if(depth < minDepth)
