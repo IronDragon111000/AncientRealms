@@ -48,9 +48,9 @@ namespace AncientRealms.Content.SubWorlds.SubSpaceHub
             private void GenerateFloatingIslands(GenerationProgress progress, GameConfiguration configuration)
             {
                 Vector2 spawnPoint = new Vector2(Main.spawnTileX , Main.spawnTileY);
-                for(int i = 0; i < Main.maxTilesX; i++)
+                for(int i = 80; i < Main.maxTilesX - 80; i++)
                 {
-                    for(int j = 0; j < Main.maxTilesY; j++)
+                    for(int j = 50; j < Main.maxTilesY -50; j++)
                     {
                         Vector2 cords = new Vector2(i, j);
                         //check if near spawn if so dont place an island
@@ -99,9 +99,12 @@ namespace AncientRealms.Content.SubWorlds.SubSpaceHub
                 {
                     for(int j = y; j < y + depth; j++)
                     {
-                        Tile tile = Main.tile[i, j];
-                        tile.HasTile = true;
-                        tile.TileType = TileID.Dirt;
+                        if(i >= 0 && i < Main.maxTilesX && j >= 0 && j < Main.maxTilesY) // prevent out of bounds
+                        {   
+                            Tile tile = Main.tile[i, j];
+                            tile.HasTile = true;
+                            tile.TileType = TileID.Dirt;
+                        }
                     }
                     depth += WorldGen.genRand.Next(-maxDepthChange, maxDepthChange);
                     if(depth > maxDepth)
