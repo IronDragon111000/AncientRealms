@@ -19,19 +19,19 @@ namespace AncientRealms.Helpers
 			intersectPoint = Vector2.Zero;
 			if(CheckLinearCollision(point1, point2, hitbox, out intersectPoint))
 				return true;
-			if(distanceLineToPoint(point1, point2, hitbox.TopLeft()) < lineWidth){
+			if(distanceLineToPoint(point1, point2, hitbox.TopLeft(), out bool _) < lineWidth){
 				intersectPoint = hitbox.TopLeft();
 				return true;
 			}
-			if(distanceLineToPoint(point1, point2, hitbox.TopRight()) < lineWidth){
+			if(distanceLineToPoint(point1, point2, hitbox.TopRight(), out bool _) < lineWidth){
 				intersectPoint = hitbox.TopRight();
 				return true;
 			}
-			if(distanceLineToPoint(point1, point2, hitbox.BottomLeft()) < lineWidth){
+			if(distanceLineToPoint(point1, point2, hitbox.BottomLeft(), out bool _) < lineWidth){
 				intersectPoint = hitbox.BottomLeft();
 				return true;
 			}
-			if(distanceLineToPoint(point1, point2, hitbox.BottomRight()) < lineWidth){
+			if(distanceLineToPoint(point1, point2, hitbox.BottomRight(), out bool _) < lineWidth){
 				intersectPoint = hitbox.BottomRight();
 				return true;
 			}
@@ -60,11 +60,21 @@ namespace AncientRealms.Helpers
 				LinesIntersect(point1, point2, hitbox.TopRight(), hitbox.BottomRight(), out intersectPoint);
 		}
 
-		public static float distanceLineToPoint(Vector2 point1, Vector2 point2, Vector2 point)
+		public static float distanceLineToPoint(Vector2 point1, Vector2 point2, Vector2 point, out bool perpendicular)
 		{
-			float numerator = MathF.Abs(((point2.Y - point1.Y) * point.X) - ((point2.X - point1.X) * point.Y) + (point2.X * point1.Y) - (point2.Y * point1.X));
-			float denominator = MathF.Sqrt(MathF.Pow(point2.Y - point1.Y, 2) + MathF.Pow(point2.X - point1.X, 2));
-			return numerator / denominator;
+			Vector2 u = point - point1; 
+			Vector2 v = point2 - point1;
+			float proj = Vector2.Dot(u, v) / Vector2.Dot(v, v);
+			if(proj >= 0 && proj <= 1)
+			{
+				perpendicular = true;
+				// finds perpendicular distance to line
+				float numerator = MathF.Abs(((point2.Y - point1.Y) * point.X) - ((point2.X - point1.X) * point.Y) + (point2.X * point1.Y) - (point2.Y * point1.X));
+				float denominator = MathF.Sqrt(MathF.Pow(point2.Y - point1.Y, 2) + MathF.Pow(point2.X - point1.X, 2));
+				return numerator / denominator;
+			}
+			perpendicular = false;
+			return 9999999999f; //returns really large number if The perpendicular projection does not fall on the line segment. Probably not the best to do this
 		}
 
 		/// <summary>

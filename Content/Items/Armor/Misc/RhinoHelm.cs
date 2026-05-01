@@ -41,11 +41,12 @@ namespace AncientRealms.Content.Items.Armor.Misc
 		public const int DashRight = 2;
 		public const int DashLeft = 3;
 
-        public const int DashCooldown = 35; 
+        public const int DashCooldown = 42; 
         public const int DashDuration = 30;
+		public const int manaCost = 25;
 
         // Initial Velocity of the dash
-        public const float DashVelocity = 12f;
+        public const float DashVelocity = 11f;
 
         // The direction the player has double tapped.  Defaults to -1 for no dash double tap
 		public int DashDir = -1;
@@ -60,9 +61,6 @@ namespace AncientRealms.Content.Items.Armor.Misc
 			if (Player.controlDown && Player.releaseDown && Player.doubleTapCardinalTimer[DashDown] < 15) {
 				DashDir = DashDown;
 			}
-			else if (Player.controlUp && Player.releaseUp && Player.doubleTapCardinalTimer[DashUp] < 15) {
-				DashDir = DashUp;
-			}
 			else if (Player.controlRight && Player.releaseRight && Player.doubleTapCardinalTimer[DashRight] < 15 && Player.doubleTapCardinalTimer[DashLeft] == 0) {
 				DashDir = DashRight;
 			}
@@ -72,10 +70,13 @@ namespace AncientRealms.Content.Items.Armor.Misc
 			else {
 				DashDir = -1;
 			}
+			
 		}
 
         public override void PreUpdateMovement() {
-			if (CanUseDash() && DashDir != -1 && DashDelay == 0) {
+			if (CanUseDash() && DashDir != -1 && DashDelay == 0 && Player.statMana >= manaCost) {
+				Player.statMana -= (int)(manaCost * Player.manaCost);
+				Player.manaRegenDelay = 20;
 				Vector2 newVelocity = Player.velocity;
 
 				switch (DashDir) {
