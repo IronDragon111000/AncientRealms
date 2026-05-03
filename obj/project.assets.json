@@ -1,33 +1,59 @@
 {
   "version": 3,
   "targets": {
-    "net8.0": {}
+    "net8.0": {
+      "AssGen/3.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/AssGen.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/AssGen.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "AssGen/3.0.0": {
+      "sha512": "c0HVU6o/vFuh67niwbjKLBDFkMwUc9YRdEhI8zj7Kl9i2BufMFlFcDa73o0M/PEVJvYeFIfcBFaatcNiDv508Q==",
+      "type": "package",
+      "path": "assgen/3.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "README.md",
+        "analyzers/dotnet/cs/AssGen.dll",
+        "assgen.3.0.0.nupkg.sha512",
+        "assgen.nuspec",
+        "lib/netstandard2.0/AssGen.dll"
+      ]
+    }
+  },
   "projectFileDependencyGroups": {
-    "net8.0": []
+    "net8.0": [
+      "AssGen >= 3.0.0"
+    ]
   },
   "packageFolders": {
-    "C:\\Users\\IronDragon\\.nuget\\packages\\": {}
+    "C:\\Users\\orion\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj",
+      "projectUniqueName": "C:\\Users\\orion\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj",
       "projectName": "AncientRealms",
-      "projectPath": "C:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj",
-      "packagesPath": "C:\\Users\\IronDragon\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\obj\\",
+      "projectPath": "C:\\Users\\orion\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj",
+      "packagesPath": "C:\\Users\\orion\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\orion\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\IronDragon\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\orion\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -45,12 +71,17 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "10.0.200"
+      }
     },
     "frameworks": {
       "net8.0": {
         "targetAlias": "net8.0",
+        "dependencies": {
+          "AssGen": {
+            "target": "Package",
+            "version": "[3.0.0, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",
@@ -62,26 +93,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.26, 8.0.26]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[8.0.26, 8.0.26]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[8.0.26, 8.0.26]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.202/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.419/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

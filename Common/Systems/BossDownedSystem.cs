@@ -8,7 +8,7 @@ using Terraria.ModLoader.IO;
 using Terraria;
 using System.IO;
 
-namespace AncientRealms.Common.Systems
+namespace AncientRealms.Core.Systems
 {
     public class BossDownedSystem : ModSystem
     {

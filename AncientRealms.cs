@@ -1,9 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
+global using Microsoft.Xna.Framework;
+global using Microsoft.Xna.Framework.Graphics;
+global using ReLogic.Content;
+global using AncientRealms.Common;
+global using AncientRealms.Helpers;
+global using Terraria;
+global using Terraria.ID;
+global using Terraria.Localization;
+global using Terraria.ModLoader;
 
 namespace AncientRealms
 {

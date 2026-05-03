@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Terraria.ModLoader;
 
-namespace AncientRealms.Common.Systems
+namespace AncientRealms.Core.Systems
 {
     public class ModIntegrationsSystem : ModSystem
     {

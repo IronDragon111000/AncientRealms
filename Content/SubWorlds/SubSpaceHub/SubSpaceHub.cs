@@ -13,7 +13,7 @@ using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.DataStructures;
-using AncientRealms.Common.Systems;
+using AncientRealms.Core.Systems;
 using StructureHelper.Models;
 
 namespace AncientRealms.Content.SubWorlds.SubSpaceHub

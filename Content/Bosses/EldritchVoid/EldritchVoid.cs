@@ -12,7 +12,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using System.Linq;
 using static Terraria.ModLoader.ModContent;
-using AncientRealms.Common.Systems;
+using AncientRealms.Core.Systems;
 
 namespace AncientRealms.Content.Bosses.EldritchVoid
 {

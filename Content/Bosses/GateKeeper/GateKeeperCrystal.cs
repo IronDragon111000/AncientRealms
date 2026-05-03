@@ -18,7 +18,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
     public class GateKeeperCrystal : ModNPC
     {
         internal ref float crystalID => ref NPC.ai[1];
-        const int stunnedDefence = 13;
+        public int stunnedDefence = 13;
         public GateKeeper parent;
 
         public Vector2 TargetPosition;
@@ -28,8 +28,6 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         public Player targetPlayer;
         public int stunnedTimer = 0;
         public bool IsSmashing = false;
-
-        public static int StunnedDefence => stunnedDefence;
 
         public override void SetDefaults()
         {
@@ -102,8 +100,24 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         }
 
         public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
-        {
+        { 
             NPC.lifeMax = (int)(250 + (50 * balance)); 
+            stunnedDefence += (int)(3 * balance);
+            if(Main.masterMode)
+            {
+                NPC.lifeMax += (int)(100 * balance); 
+                stunnedDefence += (int)(3 * balance);
+            }
+            if(Main.getGoodWorld)
+            {
+                NPC.lifeMax += (int)(75 * balance); 
+                stunnedDefence += (int)(3 * balance);
+            }
+            if(Main.zenithWorld)
+            {
+                NPC.lifeMax += (int)(30 * balance); 
+                stunnedDefence += (int)(2 * balance);
+            }
         }
 
         public override void FindFrame(int frameHeight)
