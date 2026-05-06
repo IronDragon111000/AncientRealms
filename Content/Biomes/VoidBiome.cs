@@ -111,9 +111,6 @@ namespace AncientRealms.Content.Biomes
 
 			Vector2 basepoint = Vector2.Zero;
 
-			float x = basepoint.X + GetParallaxOffset(basepoint.X, 0.6f) - Main.screenPosition.X;
-			float y = basepoint.Y + GetParallaxOffsetY(basepoint.Y, 0.2f) - Main.screenPosition.Y;
-
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
@@ -122,15 +119,6 @@ namespace AncientRealms.Content.Biomes
 			//DrawLayer(basepoint, textures[2].Value, 3, Vector2.UnitY * 160, default, false);
 			//DrawLayer(basepoint, textures[1].Value, 2, Vector2.UnitY * 355, default, false);
 			//DrawLayer(basepoint, textures[0].Value, 1, Vector2.UnitY * 380, default, false);
-
-			float progress = (float)Math.Sin(Main.GameUpdateCount / 50f);
-			var color = new Color(255, 255, 100, 0);
-			float colorAdd = 0f;
-
-			if (!Main.dayTime)
-				colorAdd = Math.Min(2, (float)Math.Sin(Main.time / Main.nightLength) * 5.0f);
-
-			
 		}
 
 		/// <summary>
