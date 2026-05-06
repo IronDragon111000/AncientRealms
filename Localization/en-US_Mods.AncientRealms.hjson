@@ -36,6 +36,7 @@ NPCs: {
 	GateKeeperCrystal.DisplayName: Gate Keeper Crystal
 	EldritchVoid.DisplayName: Eldritch Void
 	EldritchVoidExplosiveMinion.DisplayName: Eldritch Void Explosive Minion
+	SpiderBoss.DisplayName: Spider Boss
 }
 
 Projectiles: {
