@@ -14,9 +14,9 @@ using System.Linq;
 using static Terraria.ModLoader.ModContent;
 using AncientRealms.Core.Systems;
 
-/*namespace AncientRealms.Content.Bosses.BeetleBoss
+namespace AncientRealms.Content.Bosses.SpiderBoss
 {
-    public sealed partial class BeetleBoss : ModNPC
+    public sealed partial class SpiderBoss : ModNPC
     {
         public override void SetStaticDefaults()
         {
@@ -37,4 +37,4 @@ using AncientRealms.Core.Systems;
             NPC.defense = 15;
         }
     }
-}*/
+}
