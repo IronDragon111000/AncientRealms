@@ -50,6 +50,138 @@ namespace AncientRealms.Content.Bosses.SpiderBoss
             NPC.scale = 2f;
             NPC.width = 88;
             NPC.height = 88;
+            NPC.damage = 35;
+        }
+
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot) {
+	        cooldownSlot = ImmunityCooldownID.Bosses; // use the boss immunity cooldown counter, to prevent ignoring boss attacks by taking damage from other sources
+	        if (Phase == (int)AIStates.SpawnAnimation || Phase == (int)AIStates.Dying || Phase == (int)AIStates.Leaving || Phase == (int)AIStates.SpawnEffects)
+                return false; // Don't hit the player during the spawn & death animation
+    
+            return true;
+        }
+        public override void ModifyNPCLoot(NPCLoot npcLoot)
+        {
+            // Here we can modify the loot that the NPC drops when it dies. In this case, we are adding a new item drop rule that will drop a custom item called "ExampleBossBag" with a 100% chance.
+            // npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<GateKeeperTreasureBag>())); (Todo: Add treasure bag drop rule when we have a treasure bag item)
+        }
+
+        
+
+        //Used for the various differing passive animations of the different forms
+		/*private void SetFrameX(int frame)
+		{
+			NPC.frame.X = NPC.frame.Width * frame;
+		}
+
+		private void SetFrameY(int frame)
+		{
+			NPC.frame.Y = NPC.frame.Height * frame;
+		}*/
+
+        public override void OnKill()
+        {
+           // NPC.SetEventFlagCleared(ref BossDownedSystem.downedSpiderBoss, -1);
+        }
+
+        // changes phase
+		private void ChangePhase(AIStates phase, bool resetTime = false)
+		{
+			Phase = (int)phase;
+			if (resetTime)
+            {
+				GlobalTimer = 0;
+                AttackTimer = 0;
+            }
+		}
+
+        public enum AIStates
+		{
+			SpawnEffects = 0,
+			SpawnAnimation = 1,
+			FirstPhase = 2,
+			SecondPhase = 3,
+			Leaving = 4,
+			Dying = 5
+		}
+
+        public override void AI()
+        {
+            //glowing effect
+            Lighting.AddLight(new Vector2(NPC.position.X + NPC.width/2, NPC.position.Y + NPC.height/2), 2.1f, 2f, 2.2f);
+
+            //Ticks the timer
+            GlobalTimer++;
+            AttackTimer++;
+
+            // Handles fleeing logic. To make sure we dont force a client into having a fleeing boss too early we give the boss a 1 second "charge" to flee
+			if (Phase != (int)AIStates.Leaving && Phase != (int)AIStates.Dying && (int)Phase > (int)AIStates.SpawnAnimation && !Main.player.Any(n => n.active && !n.dead )) //if no valid players are detected
+				fleeTimer++;
+			else
+				fleeTimer = 0;
+
+			if (fleeTimer > 60)
+			{
+				GlobalTimer = 0;
+				Phase = (int)AIStates.Leaving; //begone thot!
+				NPC.netUpdate = true;
+			}
+
+
+            switch (Phase)
+            {
+                case (int)AIStates.SpawnEffects:
+                    NPC.Opacity = 0f; // Start fully transparent for the spawn animation
+
+					ChangePhase(AIStates.SpawnAnimation, true);
+					break;
+                case (int)AIStates.SpawnAnimation:
+                    SpawnAnimation();
+                    if (GlobalTimer > 155) // After the spawn animation is done, transition to the first phase
+                    {
+                        NPC.dontTakeDamage = false; // Allow the NPC to take damage after the spawn animation is complete
+					    ChangePhase(AIStates.FirstPhase, true);
+                    }
+                    break;
+                case (int)AIStates.FirstPhase:
+                    FirstPhase();
+                    break;
+                case (int)AIStates.SecondPhase:
+                    SecondPhase();
+                    break;
+                case (int)AIStates.ThirdPhase:
+                    ThirdPhase();
+                    break;
+                case (int)AIStates.Leaving:
+                    Leaving();
+                    break;
+                case (int)AIStates.Dying:
+                    Dying();
+                    break;
+            }
+
+            prevTickGlobalTimer = GlobalTimer;
+            prevPhase = Phase;
+            prevAttackPhase = AttackPhase;
+        }
+
+        private void SpawnAnimation()
+        {
+            if (GlobalTimer == 1)
+            {
+                SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
+            }
+
+            NPC.Opacity = Math.Min(GlobalTimer / 150f, 1f); // Fade in over 2.5 seconds (150 ticks);            
+        }
+
+        private void Leaving()
+        {
+            NPC.position.Y += -1.5; // Move upwards slightly while fading out for a more dramatic effect
+                if (GlobalTimer >= 150)
+				{
+					NPC.active = false; //leave
+				}
         }
     }
 }
