@@ -44,7 +44,7 @@ namespace AncientRealms.Content.Bosses.SpiderBoss
             NPC.noGravity = true;
             NPC.noTileCollide = true;
             NPC.value = Item.buyPrice(gold: 10);
-            NPC.lifeMax = 6000;
+            NPC.lifeMax = 4500;
             NPC.aiStyle = -1;
             NPC.defense = 15;
             NPC.scale = 2f;
@@ -107,9 +107,6 @@ namespace AncientRealms.Content.Bosses.SpiderBoss
 
         public override void AI()
         {
-            //glowing effect
-            Lighting.AddLight(new Vector2(NPC.position.X + NPC.width/2, NPC.position.Y + NPC.height/2), 2.1f, 2f, 2.2f);
-
             //Ticks the timer
             GlobalTimer++;
             AttackTimer++;
@@ -131,13 +128,11 @@ namespace AncientRealms.Content.Bosses.SpiderBoss
             switch (Phase)
             {
                 case (int)AIStates.SpawnEffects:
-                    NPC.Opacity = 0f; // Start fully transparent for the spawn animation
-
 					ChangePhase(AIStates.SpawnAnimation, true);
 					break;
                 case (int)AIStates.SpawnAnimation:
                     SpawnAnimation();
-                    if (GlobalTimer > 155) // After the spawn animation is done, transition to the first phase
+                    if (GlobalTimer >155) // After the spawn animation is done, transition to the first phase
                     {
                         NPC.dontTakeDamage = false; // Allow the NPC to take damage after the spawn animation is complete
 					    ChangePhase(AIStates.FirstPhase, true);
@@ -149,14 +144,11 @@ namespace AncientRealms.Content.Bosses.SpiderBoss
                 case (int)AIStates.SecondPhase:
                     SecondPhase();
                     break;
-                case (int)AIStates.ThirdPhase:
-                    ThirdPhase();
-                    break;
                 case (int)AIStates.Leaving:
                     Leaving();
                     break;
                 case (int)AIStates.Dying:
-                    Dying();
+                    //Dying();
                     break;
             }
 
@@ -171,17 +163,60 @@ namespace AncientRealms.Content.Bosses.SpiderBoss
             {
                 SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
             }
-
-            NPC.Opacity = Math.Min(GlobalTimer / 150f, 1f); // Fade in over 2.5 seconds (150 ticks);            
+            if (GlobalTimer < 60)
+            {
+                NPC.position.Y += 5f; // Move downwards slightly to create an effect of the boss dropping down from a web
+            }
         }
 
         private void Leaving()
         {
-            NPC.position.Y += -1.5; // Move upwards slightly while fading out for a more dramatic effect
+            NPC.position.Y += -1.5f; // Move upwards slightly while fading out for a more dramatic effect
                 if (GlobalTimer >= 150)
 				{
 					NPC.active = false; //leave
 				}
+        }
+
+        private void FirstPhase()
+        {
+            if (NPC.life <= NPC.lifeMax / 2) // Transition to second phase at 50% health
+            {
+                ChangePhase(AIStates.SecondPhase, true);
+            }
+            else
+            {
+                if (AttackTimer == 1) //switching out attacks
+                {
+                    AttackPhase++;
+                    if (AttackPhase > 0)
+                    { 
+                        AttackPhase = 0;
+                    }
+                }
+                switch (AttackPhase)
+                {
+                    case 0:
+                        DashAtPlayer(Main.player.Where(n => n.active && !n.dead).ToList()[0], 22f, (int)AttackTimer);
+                        if(AttackTimer > 150) AttackTimer = 0;
+                        break;
+                    case 1:
+                        break;
+                }
+            }
+        }
+
+        private void SecondPhase()
+        {
+            if (NPC.life <= 0) // Transition to dying phase when health reaches 0
+            {
+                ChangePhase(AIStates.Dying, true);
+            }
+            else
+            {
+                // Implement the attack patterns for the second phase here
+                // For example, you could call a method like SecondPhaseAttacks() that contains the logic for the second phase attacks
+            }
         }
     }
 }
