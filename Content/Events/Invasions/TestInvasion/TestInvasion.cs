@@ -1,5 +1,14 @@
 using AncientRealms.Core.Systems;
 using AncientRealms.Content.Events.Invasions.TestInvasion;
+using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Terraria;
+using Terraria.Chat;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace AncientRealms.Content.Events.Invasions.TestInvasion
 {
@@ -29,10 +38,10 @@ namespace AncientRealms.Content.Events.Invasions.TestInvasion
             Wave = 0;
              EventTimer = 0;
             WaveTimer = 0;
-            completion = 0f;
+            completion = 0;
         }
 
-        public override void preUpdateWorld()
+        public override void PreUpdateWorld()
         {
             WaveTimer++;
             EventTimer++;
@@ -50,6 +59,7 @@ namespace AncientRealms.Content.Events.Invasions.TestInvasion
         {
             if (TestInvasion.Wave > 0)
             {
+                TestInvasion.completion++;
                 maxPoints = TestInvasion.Wave switch
                 {
                     1 => 30,
@@ -97,25 +107,25 @@ namespace AncientRealms.Content.Events.Invasions.TestInvasion
             {
                 new Dictionary<int, float> { {ModContent.NPCType<CrystalSlug>(), 1f} }, // 1
                 new Dictionary<int, float> { // 2
-                    {NPCID.Zombie, 1f},
+                    {ModContent.NPCType<CrystalSlug>(), 1f},
                 },
                 new Dictionary<int, float> { // 3
-                    {NPCID.Zombie, 1f},
+                    {ModContent.NPCType<CrystalSlug>(), 1f},
                 },
                 new Dictionary<int, float> { // 4
-                    {NPCID.Zombie, 1f},
+                    {ModContent.NPCType<CrystalSlug>(), 1f},
                 },
                 new Dictionary<int, float> { // 5
-                    {NPCID.Zombie, 1f},
+                    {ModContent.NPCType<CrystalSlug>(), 1f},
                 },
                 new Dictionary<int, float> { // 6
-                    {NPCID.Zombie, 1f},
+                    {ModContent.NPCType<CrystalSlug>(), 1f},
                 },
                 new Dictionary<int, float> { // 7
-                    {NPCID.Zombie, 1f},
+                    {ModContent.NPCType<CrystalSlug>(), 1f},
                 },
                 new Dictionary<int, float> { // 8
-                    {NPCID.Zombie, 1f},
+                    {ModContent.NPCType<CrystalSlug>(), 1f},
                 },
             };
         }

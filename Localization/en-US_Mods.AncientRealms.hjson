@@ -37,6 +37,7 @@ NPCs: {
 	EldritchVoid.DisplayName: Eldritch Void
 	EldritchVoidExplosiveMinion.DisplayName: Eldritch Void Explosive Minion
 	SpiderBoss.DisplayName: Spider Boss
+	CrystalSlug.DisplayName: Crystal Slug
 }
 
 Projectiles: {

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AncientRealms")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fbe3f747c773bfec9dedab8e3834a73e2242e513")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6f51a04e9a98d9bc761105c7470256b097a9b48f")]
 [assembly: System.Reflection.AssemblyProductAttribute("AncientRealms")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AncientRealms")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
