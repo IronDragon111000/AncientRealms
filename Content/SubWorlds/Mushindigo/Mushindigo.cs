@@ -4,6 +4,9 @@ using Terraria.WorldBuilding;
 using System.Collections.Generic;
 using Terraria.ModLoader;
 using System.Reflection;
+using System.Numerics;
+using System;
+using static FastNoiseLite;
 
 using static Terraria.ModLoader.ModContent;
 using Microsoft.Xna.Framework;
@@ -26,15 +29,14 @@ namespace AncientRealms.Content.SubWorlds.Mushindigo
             protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
             {
                 progress.Message = "Generating terrain"; // Sets the text displayed for this pass
-                Main.worldSurface = Main.maxTilesY / 10; 
-                Main.rockLayer = 1.5*(Main.maxTilesY / 10); 
-                Main.underworldLayer = 9 * (Main.maxTilesY / 10);
-
-                
+                Main.worldSurface = Main.maxTilesY / 5; 
+                Main.rockLayer = Main.worldSurface + Main.maxTilesY / 15; 
+            
                 for(int i = 0; i < Main.maxTilesX; i++)
                 {
-                    for(int j = Main.rockLayer; j < Main.underworldLayer; j++)
+                    for(int j = (int)Main.rockLayer; j < Main.UnderworldLayer; j++)
                     {
+                        Tile tile = Main.tile[i, j];
                         tile.HasTile = true;
                         tile.TileType = TileID.Stone;
                     }
@@ -44,26 +46,28 @@ namespace AncientRealms.Content.SubWorlds.Mushindigo
 
             public void GenerateSurface(GenerationProgress progress, GameConfiguration configuration)
             {
-                int[] SurfaceHeightMap = new int[Main.maxTilesX - 1];
-                for(int i = 0; i < SurfaceHeightMap.Length(); i++)
+                FastNoiseLite noise = new FastNoiseLite(Main.ActiveWorldFileData.Seed);
+                noise.SetNoiseType(NoiseType.OpenSimplex2);
+                noise.SetFrequency(0.01f);
+
+                 for(int i = 0; i < Main.maxTilesX; i++)
                 {
-                    SurfaceHeightMap[i] = Math.round(Main.Noise.PerlinNoise2D(i * 0.5, 0) * 30);
-                    for(j = SurfaceHeightMap[i]; j > Main.worldSurface; j++)
+                    int surfaceHeight = (int)(noise.GetNoise(i, 0) * 20 + Main.worldSurface + -20);
+                    for(int j = surfaceHeight; j < Main.rockLayer; j++)
                     {
-                        
-                    }
-                }   
+                        Tile tile = Main.tile[i, j];
+                        tile.HasTile = true;
+                        tile.TileType = TileID.Mud;
+                    } 
+                }
             }
         }
         public class MushindigoStructureGenPass : GenPass
         {
-            public MushindigoBaseGenPass() : base("Terrain", 1f) {}
+            public MushindigoStructureGenPass() : base("Terrain", 1f) {}
             protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
             {
                 progress.Message = "Generating terrain"; // Sets the text displayed for this pass
-                Main.worldSurface = Main.maxTilesY - 42; // Hides the underground layer just out of bounds
-                Main.rockLayer = Main.maxTilesY; // Hides the cavern layer way out of bounds
-                
 
                 
             }

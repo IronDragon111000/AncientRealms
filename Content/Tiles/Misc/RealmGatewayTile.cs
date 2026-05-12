@@ -11,6 +11,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.Default;
 using Terraria.ObjectData;
 using AncientRealms.Content.SubWorlds.SubSpaceHub;
+using AncientRealms.Content.SubWorlds.Mushindigo;
 
 namespace AncientRealms.Content.Tiles.Misc
 {
@@ -37,7 +38,7 @@ namespace AncientRealms.Content.Tiles.Misc
         public override bool RightClick(int i, int j)
         {
             if(SubworldLibrary.SubworldSystem.IsActive<SubSpaceHub>())
-                SubworldLibrary.SubworldSystem.Exit();
+                SubworldLibrary.SubworldSystem.Enter<Mushindigo>();
             else
                 SubworldLibrary.SubworldSystem.Enter<SubSpaceHub>();
             return true;

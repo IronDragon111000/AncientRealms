@@ -36,24 +36,26 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\orion\\.nuget\\packages\\": {}
+    "C:\\Users\\IronDragon\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\orion\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj",
+      "projectUniqueName": "C:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj",
       "projectName": "AncientRealms",
-      "projectPath": "C:\\Users\\orion\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj",
-      "packagesPath": "C:\\Users\\orion\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\orion\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\obj\\",
+      "projectPath": "C:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj",
+      "packagesPath": "C:\\Users\\IronDragon\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\orion\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\IronDragon\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -71,7 +73,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "10.0.200"
     },
     "frameworks": {
       "net8.0": {
@@ -93,12 +96,26 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.26, 8.0.26]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.26, 8.0.26]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.26, 8.0.26]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.419/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.202/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
