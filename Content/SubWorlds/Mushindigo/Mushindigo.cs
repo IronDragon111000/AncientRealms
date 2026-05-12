@@ -41,10 +41,12 @@ namespace AncientRealms.Content.SubWorlds.Mushindigo
                         tile.TileType = TileID.Stone;
                     }
                 }
-                GenerateSurface(progress, configuration);
+                GenerateSurfaceLayer(progress, configuration);
+                GenerateOres(progress, configuration);
+                //Set biome locations
             }
 
-            public void GenerateSurface(GenerationProgress progress, GameConfiguration configuration)
+            public void GenerateSurfaceLayer(GenerationProgress progress, GameConfiguration configuration)
             {
                 FastNoiseLite noise = new FastNoiseLite(Main.ActiveWorldFileData.Seed);
                 noise.SetNoiseType(NoiseType.OpenSimplex2);
@@ -62,25 +64,135 @@ namespace AncientRealms.Content.SubWorlds.Mushindigo
                 }
             }
         }
-        public class MushindigoStructureGenPass : GenPass
+
+        public class MushindigoOceanGenpass : GenPass
         {
-            public MushindigoStructureGenPass() : base("Terrain", 1f) {}
+            public MushindigoOceanGenpass() : base("Terrain", 1f);
             protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
             {
-                progress.Message = "Generating terrain"; // Sets the text displayed for this pass
+                progress.Message = "Making Oceans"; // Sets the text displayed for this pass
+                int xCord = 300;
+                Point16 ShoreLeft = new Point16(xCord , Helpers.GenerationHelper.GetHighestBlockY(xCord));
+                Point16 ShoreRight = new Point16(Main.maxTilesX - xCord, Helpers.GenerationHelper.GetHighestBlockY(Main.maxTilesX - xCord));
 
-                
+                GenerateSandyShore(ShoreLeft, progress,  configuration);
+                GenerateRockyCoast(ShoreRight, progress,  configuration);
+            }
+
+            private void GenerateSandyShore(Point16 Shore, GenerationProgress progress, GameConfiguration configuration)
+            {
+                bool leftSide = true;
+                if(Shore.X > Main.maxTilesX/2)
+                    leftSide = false;
+                int x = Shore.X;
+                while((x >= 0 && leftSide) || (x < Main.maxTilesX && !leftSide))
+                {
+                    int floor = Shore.Y + 2 * (int)Math.Log(Math.Abs(Shore.X - x) + 2);
+                    for(int y = Shore.Y; y < floor; y++)
+                    {
+                        Tile tile = Main.tile[i, j];
+                        if(floor - y < 20)
+                        {
+                            tile.HasTile = true;
+                            tile.TileType = TileID.Sand;    
+                        }else if(y - Shore.Y > 5)
+                        {
+                            tile.HasTile = true;
+                            tile.TileType = TileID.Water;
+                        }
+                        else
+                        {    
+                            tile.HasTile = false;
+                            tile.TileType = TileID.Air;
+                        }
+                    }
+                    if(leftSide){x--;}else{x++;}
+                }   
+            }
+            private void GenerateRockyCoast(Point16 Shore, GenerationProgress progress, GameConfiguration configuration)
+            {
+                bool leftSide = true;
+                if(Shore.X > Main.maxTilesX/2)
+                    leftSide = false;
+                List<Point16> PillarLocations = new List<Point16>();
+                int x = Shore.X;
+                while((x >= 0 && leftSide) || (x < Main.maxTilesX && !leftSide))
+                {
+                    int floor = Shore.Y + 2 * (int)Math.Pow(Math.Abs(Shore.X - x) + 1, 4);
+                    for(int y = Shore.Y; y < floor; y++)
+                    {
+                        Tile tile = Main.tile[x, y];
+                        if(floor - y < 20)
+                        {
+                            tile.HasTile = true;
+                            tile.TileType = TileID.Sand;    
+                        }else if(y - Shore.Y > 5)
+                        {
+                            tile.HasTile = true;
+                            tile.TileType = TileID.Water;
+                        }
+                        else
+                        {    
+                            tile.HasTile = false;
+                            tile.TileType = TileID.Air;
+                        }
+                        int rand = WorldGen.genRand.Next(0, 50000);
+                        if(rand > 49999)
+                        {
+                            PillarLocations.Add(new Point16(x, y));
+                        }
+                    }
+                    foreach(Point16 location in PillarLocations)
+                    {
+                        GenerateStonePillar(location, WorldGen.genRand.Next(5, 8), WorldGen.genRand.Next(15, 20));
+                    }
+                    if(leftSide){x--;}else{x++;}
+                }   
+            }
+            private void GenerateStonePillar(Point16 center, int Width, int Height)
+            {
+                for(int y = center.Y - Height/2; y < center.Y + Height/2; y++)
+                {
+                    int localWidth = (int)(Width * 0.5f * Math.Sqrt(1 - Math.Pow((y - center.Y) / (Height * 0.5f), 2)));
+                    for(int x = center.X - localWidth/2; x < center.X + localWidth/2; x++)
+                    {    
+                        Tile tile = Main.tile[x,y];
+                        tile.HasTile = true;
+                        tile.TileType = TileID.Stone;
+                    }
+                }
             }
         }
+
+        public class MushindigoUnderworldGenpass : GenPass
+        {
+            public MushindigoUnderworldGenpass() : base("Terrain", 1f);
+            protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
+            {
+                progress.Message = "Making Shroom Hell"; // Sets the text displayed for this pass
+
+            }
+        }
+
+        public class MushindigoHardModeGenpass : GenPass
+        {
+            public MushindigoHardModeGenpass() : base("Terrain", 1f);
+            protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
+            {
+            }
+            
+        }
+    
         //Same size as a small world (ToDo: make it so that it increases with main world size)
         public override int Width => 4200;
         public override int Height => 1200;
-        public override bool ShouldSave => true;
+        public override bool ShouldSave => false; //just for testing will be true later
 
         public override List<GenPass> Tasks => new List<GenPass>()
         {
             new MushindigoBaseGenPass(),
-            new MushindigoStructureGenPass()
+            new MushindigoOceanGenpass(),
+            new MushindigoUnderworldGenpass()
         };
 
         // Sets the time to the middle of the day whenever the subworld loads
@@ -88,6 +200,7 @@ namespace AncientRealms.Content.SubWorlds.Mushindigo
         {
             Main.dayTime = true;
             Main.time = 27000;
+            Main.spawnTileY = Helpers.GenerationHelper.GetHighestBlockY(Main.spawnTileX);
         }
 
         public override void CopyMainWorldData()
