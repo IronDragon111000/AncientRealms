@@ -34,6 +34,9 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         public float LaserSpinTelegraphLength = 120f;
         public float LaserConvergeTelegraphLength = 60f;
 
+        //Attack Lengths
+        public float LaserSweepLength = 95;
+
         public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
         {
             NPC.damage *= (int)balance;
@@ -174,6 +177,74 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 
             } else {
 
+            }
+        }
+        private void LaserSweeps()
+        {
+            returnToCenter = false;
+            if(AttackTimer > AttackDelay)
+            {
+                if(NPC.Center.Y - arena.Top > 5)
+                {
+                    NPC.velocity.Y = -2f;
+                }
+                else if(NPC.Center.Y - arena.Top < 5)
+                {
+                    NPC.velocity.Y = 2f;
+                }
+                else
+                {
+                    NPC.velocity.Y = 0f;
+                }
+                bool leftSide = true;
+                if(((AttackTimer - AttackDelay) / LaserSweepLength) % 2 == 1)
+                    leftSide = false;
+                LaserSweep((AttackTimer - AttackDelay) % LaserSweepLength, leftSide);
+            }
+        }
+        private void LaserSweep(int timer, bool leftSide)
+        {
+            AttackDirection = new Vector2(0, 1);
+            if(timer == 0)
+            {
+                RandomizeTarget();
+            }
+            if(timer < 15)
+            {
+                float targetX = Main.player[NPC.target].Center.X;
+                if(leftSide){targetX += -5f;}else{targetX += 5f;}
+                if(NPC.Center.X - targetX> 5){
+                    NPC.velocity.X = 5f;
+                }
+                else if(NPC.Center.X - targetX < 5)
+                {
+                    NPC.velocity.X = -5f;
+                }
+                else
+                {
+                    NPC.velocity.X = 0f;
+                }
+            }
+            else if (timer == 15)
+            {
+                Projectile laser = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, AttackDirection, ModContent.ProjectileType<GateKeeperLaser>(), LaserSpinDamage, 1, 0, 0, 0);
+                Lasers.Add(laser.ModProjectile as GateKeeperLaser);
+                Lasers[0].source = this;
+                Lasers[0].Tell = false;
+            } 
+            else if(timer > 15)
+            {
+                if(leftSide){NPC.velocity.X = 5f;}else{NPC.velocity.X = -5f;}
+                //End Attack
+                if(timer >= LaserSweepLength)
+                {
+                    ResetAttack();
+                    for(int i = 0; i < Lasers.Count; i++)
+                    {
+                        Lasers[i].Projectile.active = false;
+                    }
+                    Lasers = new List<GateKeeperLaser>();
+                }
             }
         }
     }

@@ -35,6 +35,8 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 		const int arenaWidth = 1280;
 		const int arenaHeight = 896;
 
+		private bool returnToCenter = true;
+
          public Color glowColor = Color.Transparent;
 
         public override void SetStaticDefaults()
@@ -118,6 +120,9 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             //Ticks the timer
 			GlobalTimer++;
 			AttackTimer++;
+
+			//resets return to center, will be undone later on if it should still be false
+			returnToCenter = true;
 
             //Main AI
 			Lighting.AddLight(NPC.Center, new Vector3(1, 0.8f, 0.4f)); //glow
@@ -206,6 +211,15 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 			Dust.QuickDustLine(arena.BottomLeft(), arena.BottomRight(), arenaWidth/20, Color.Purple);
 			Dust.QuickDustLine(arena.BottomRight(), arena.TopRight(), arenaHeight/20, Color.Purple);
 
+			if(returnToCenter)
+			{
+				if(NPC.Center.Distance(arena.Center) > 5)
+                {
+                    NPC.velocity = Vector2.Normalize(arena.Center - NPC.Center) * 4f; 
+                } else                {
+                    NPC.velocity = Vector2.Zero;
+                }
+			}
         }
         public override void FindFrame(int frameHeight)
         {
@@ -266,8 +280,8 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 				case 0: break;
 				case 1: CrystalSmash(); break;
 				case 2: LaserSpin(); break;
-				case 3: break;
-				case 4: break;
+				case 3: CrystalSmash();break;
+				case 4: LaserSweeps();break;
 			}
 
 			if (CrystalsCurrentHealth <= 0)
