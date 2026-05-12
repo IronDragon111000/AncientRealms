@@ -54,7 +54,7 @@ namespace AncientRealms.Content.Bosses.SpiderBoss
 			}
 			direction.Normalize();
 			NPC.rotation = direction.ToRotation() + MathHelper.PiOver2;
-			if(timer > tellTime)
+			if(timer > tellTime + 5)
 				NPC.velocity = direction * speed;
 		}
     }
