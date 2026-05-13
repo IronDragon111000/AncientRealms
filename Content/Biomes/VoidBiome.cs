@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using ReLogic.Content;
+using AssGen;
 
 namespace AncientRealms.Content.Biomes
 {
@@ -26,14 +27,14 @@ namespace AncientRealms.Content.Biomes
 		
 		private static Vector2 parallaxOrigin;
 		private static float vanillaParallax;
-		/*internal static Asset<Texture2D>[] textures =
+		internal static Asset<Texture2D>[] textures =
   		{
             Assets.Backgrounds.VoidBackGround0,
     		Assets.Backgrounds.VoidBackGround1,
             Assets.Backgrounds.VoidBackGround2,
             Assets.Backgrounds.VoidBackGround3,
             Assets.Backgrounds.VoidBackGround4
-  		};*/
+  		};
         public override bool IsBiomeActive(Player player)
         {
             return SubworldLibrary.SubworldSystem.IsActive<SubSpaceHub>();
@@ -111,11 +112,11 @@ namespace AncientRealms.Content.Biomes
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
-			//DrawLayer(basepoint, textures[4].Value, 5, Vector2.UnitY * 40, default, false);
-			//DrawLayer(basepoint, textures[3].Value, 4, Vector2.UnitY * 150, default, false);
-			//DrawLayer(basepoint, textures[2].Value, 3, Vector2.UnitY * 160, default, false);
-			//DrawLayer(basepoint, textures[1].Value, 2, Vector2.UnitY * 355, default, false);
-			//DrawLayer(basepoint, textures[0].Value, 1, Vector2.UnitY * 380, default, false);
+			DrawLayer(basepoint, textures[4].Value, 5, Vector2.UnitY * 40, default, false);
+			DrawLayer(basepoint, textures[3].Value, 4, Vector2.UnitY * 150, default, false);
+			DrawLayer(basepoint, textures[2].Value, 3, Vector2.UnitY * 160, default, false);
+			DrawLayer(basepoint, textures[1].Value, 2, Vector2.UnitY * 355, default, false);
+			DrawLayer(basepoint, textures[0].Value, 1, Vector2.UnitY * 380, default, false);
 		}
 
 		/// <summary>
