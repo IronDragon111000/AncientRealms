@@ -18,6 +18,7 @@ using Terraria.IO;
 using Terraria.DataStructures;
 using AncientRealms.Core.Systems;
 using StructureHelper.Models;
+using AncientRealms.Content.Biomes;
 
 namespace AncientRealms.Content.SubWorlds.Mushindigo
 {
@@ -231,6 +232,21 @@ namespace AncientRealms.Content.SubWorlds.Mushindigo
             {
             }
             
+        }
+
+        public class MushindigoNPC : ModNPC
+        {
+            public override EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
+            {
+                if(SubWorldLibrary.SubWorldSystem.IsActive<Mushindigo>())
+                {
+                    pool.clear;
+                    if(MushindigoSpiderNestBiome.isBiomeActive())
+                    {
+                        
+                    }
+                }
+            }
         }
     
         //Same size as a small world (ToDo: make it so that it increases with main world size)
