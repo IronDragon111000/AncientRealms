@@ -28,6 +28,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         public Player targetPlayer;
         public int stunnedTimer = 0;
         public bool IsSmashing = false;
+        public bool Arcing = false;
 
         public override void SetDefaults()
         {
@@ -57,7 +58,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             if(IsSmashing)
             {
                 NPC.rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2;
-                if (NPC.Center.Y > parent.arena.Bottom - 20 || NPC.Center.Y < parent.arena.Top + 20 || NPC.Center.X < parent.arena.Left + 20 || NPC.Center.X > parent.arena.Right - 20)
+                if (NPC.Center.Y > parent.arena.Bottom - 25 || NPC.Center.Y < parent.arena.Top + 25 || NPC.Center.X < parent.arena.Left + 25 || NPC.Center.X > parent.arena.Right - 25)
                 {
                     NPC.defense = stunnedDefence;
                     stunnedTimer = 220;
@@ -82,7 +83,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 NPC.velocity = Vector2.Zero;
             }
 
-            if(!IsSmashing && stunnedTimer <= 0)
+            if(!Arcing && !IsSmashing && stunnedTimer <= 0)
             {
                 if(NPC.Center.Distance(HomePosition) > 5)
                 {

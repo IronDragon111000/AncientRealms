@@ -26,14 +26,17 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         public int CrystalSmashProjectileDamage = 10;
         public int LaserSpinDamage = 25;
         public int LaserConvergeDamage = 25;
+        public int LaserSweepDamage = 20;
+        public int SlamDamage = 45;
+        public int ShardVolleyDamage = 15;
 
         //How long before an attack starts - exists to give players time to setup for next attack
         public float AttackDelay = 60f;
         // Telegraph Lengths for attacks
         public float CrystalSmashTelegraphLength = 45f;
         public float CrystalSmashProjectileTelegraphLength = 20f;
-        public float LaserSpinTelegraphLength = 120f;
-        public float LaserConvergeTelegraphLength = 60f;
+        public float LaserConvergeTelegraphLength = 30f;
+        public float SlamTelegraphLength = 20f;
 
         //Attack Lengths
         public float LaserSweepLength = 120f;
@@ -46,6 +49,16 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         public void ResetAttack()
 		{
 			AttackTimer = 0;
+            for(int i = 0; i < Crystals.Count; i++)
+            {
+                Crystals[i].Arcing = false;
+                Crystals[i].NPC.netUpdate = true;
+            }
+            for(int i = 0; i < Lasers.Count; i++)
+        	{
+            	Lasers[i].Projectile.active = false; 
+           	}
+            Lasers = new List<GateKeeperLaser>();
 			NPC.netUpdate = true;
 		}
 
@@ -103,15 +116,33 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                     }
                 }
             } 
-            if(AttackTimer > AttackDelay + CrystalSmashTelegraphLength * Crystals.Count + 240)
-            {
-                ResetAttack();
-            }
         }
 
         private void CrystalArcRing()
         {
-            
+            if(AttackTimer >= AttackDelay)
+            {
+                for(int i= 0; i < Crystals.Count; i++)
+                {
+                    if(Crystals[i] != null && Crystals[i].NPC.active)
+                    {
+                        Crystals[i].Arcing = true;
+                        Vector2 DirectionToBoss = Vector2.Normalize(NPC.Center - Crystals[i].NPC.Center);;
+                        if(AttackTimer < AttackDelay + 30)
+                        {
+                            Crystals[i].velocity = DirectionToBoss * (-10f);
+                            Crystals[i].CanHitPlayer = false;
+                        } else
+                        {
+                            Crystals[i].velocity = DirectionToBoss * 3f;
+                            Crystals[i].CanHitPlayer = true;
+                        }
+                        Crystals[i].rotation = DirectionToBoss.ToRotation() + MathHelper.PiOver2;
+                        float AngluarSpeed = MathHelper.TwoPi / 180;
+                        Crystals[i].velocity += ((NPC.Center - Crystals[i].NPC.Center) * AngluarSpeed).RotatedBy(MathHelper.PiOver2);
+                    }
+                }
+            }
         }
 
         private void LaserSpin()
@@ -156,30 +187,116 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 Lasers[0].Projectile.velocity = Vector2.Normalize(AttackDirection);
                 if(AttackTimer > AttackDelay + LaserSpinTelegraphLength)
                     Lasers[0].Tell = false;
-
-                //End Attack
-                if(AttackTimer > AttackDelay + LaserSpinTelegraphLength + 200)
-                {
-                    ResetAttack();
-                    for(int i = 0; i < Lasers.Count; i++)
-                    {
-                        Lasers[i].Projectile.active = false;
-                    }
-                    Lasers = new List<GateKeeperLaser>();
-                }
             }
         }
 
         private void LaserConverge()
         {
-            if(AttackTimer < AttackDelay){
+            returnToCenter = false;
+            if(AttackTimer == 1)
+            {
+                Random rand = new Random();
+                if(rand.Next(10) >= 5)
+                {
+                    destination = new Vector2(arena.Right, arena.Center.Y);
+                    AttackDirection = (MathHelper.Pi + rand.Next(-45, 45).ToRadians()).ToRotationVector2();
+                }
+                else
+                {
+                    destination = new Vector2(arena.Left, arena.Center.Y);
+                    AttackDirection = rand.Next(-45, 45).ToRadians().ToRotationVector2();
+                }
+            }
+            if((destination - NPC.Center).Length() > 5f)
+            {
+               NPC.velocity = Vector2.Normalize(destination - NPC.Center) * 15f; 
+            } 
+            else
+            {
+                NPC.velocity = Vector2.Zero;
+            }
+            if(AttackTimer == AttackDelay)
+            {
+                //The Actual lasers
+                    // Points up
+                Projectile laser0 = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, 
+                    new Vector2(0, -1), ModContent.ProjectileType<GateKeeperLaser>(), LaserSpinDamage, 1, 0, 0, 0);
+                Lasers.Add(laser0.ModProjectile as GateKeeperLaser);
+                Lasers[0].source = this;   
+                    // Points down
+                Projectile laser1 = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, 
+                    new Vector2(0, 1), ModContent.ProjectileType<GateKeeperLaser>(), LaserSpinDamage, 1, 0, 0, 0);
+                Lasers.Add(laser1.ModProjectile as GateKeeperLaser);
+                Lasers[1].source = this;
 
-            } else if(AttackTimer < AttackDelay + LaserConvergeTelegraphLength){
+                // These 2 show where the other 2 lasers final positions will be. They will always have tell = true
+                Projectile laser2 = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, 
+                    AttackDirection.RotatedBy(MathHelper.Pi / 6f), ModContent.ProjectileType<GateKeeperLaser>(), LaserSpinDamage, 1, 0, 0, 0);
+                Lasers.Add(laser2.ModProjectile as GateKeeperLaser);
+                Lasers[2].source = this;
+                Projectile laser3 = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, 
+                    AttackDirection.RotatedBy(-MathHelper.Pi / 6f), ModContent.ProjectileType<GateKeeperLaser>(), LaserSpinDamage, 1, 0, 0, 0);
+                Lasers.Add(laser3.ModProjectile as GateKeeperLaser);
+                Lasers[3].source = this;
+            }
+            if(AttackTimer > AttackDelay + LaserConvergeTelegraphLength){
+                Lasers[0].tell = false;
+                Lasers[1].tell = true;
+                //Adjust aim
+                float AimSpeed = MathHelper.ToRadians(0.75f);
+                Vector2 aim = Lasers[2].velocity;
+                if (aim.HasNaNs()) {
+                    aim = -Vector2.UnitY;
+                }
 
-            } else {
+                // Calculate current and target angles
+                float currentAngle = Lasers[0].velocity.ToRotation();
+                float targetAngle = aim.ToRotation();
 
+                // Get the smallest angle difference
+                float angleDiff = MathHelper.WrapAngle(targetAngle - currentAngle);
+
+                // Rotate by a constant amount towards the target, clamped to max speed
+                float turnAmount = MathHelper.Clamp(angleDiff, -AimSpeed, AimSpeed);
+                float newAngle = currentAngle + turnAmount;
+
+                // Set new AttackDirection
+                Lasers[0].velocity = newAngle.ToRotationVector2();
+                Vector2 aim1 = Lasers[3].velocity;
+                if (aim1.HasNaNs()) {
+                    aim1 = -Vector2.UnitY;
+                }
+
+                // Calculate current and target angles
+                float currentAngle1 = Lasers[1].velocity.ToRotation();
+                float targetAngle1 = aim1.ToRotation();
+
+                // Get the smallest angle difference
+                float angleDiff1 = MathHelper.WrapAngle(targetAngle1 - currentAngle1);
+
+                // Rotate by a constant amount towards the target, clamped to max speed
+                float turnAmount1 = MathHelper.Clamp(angleDiff1, -AimSpeed, AimSpeed);
+                float newAngle1 = currentAngle1 + turnAmount1;
+
+                // Set new AttackDirection
+                Lasers[1].velocity = newAngle1.ToRotationVector2();
+
+                if (AttackDirection != aim) {
+                    NPC.netUpdate = true;
+                }
+
+                if(currentAngle == targetAngle && currentAngle1 == targetAngle1)
+                {
+                    FocusedBulletHell(); 
+                }
             }
         }
+
+        private void FocusedBulletHell()
+        {
+            
+        }
+
         private void LaserSweeps()
         {
             returnToCenter = false;
@@ -198,10 +315,6 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                     NPC.velocity.Y = 0f;
                 }
                 LaserSweep((int)((AttackTimer - AttackDelay) % LaserSweepLength));
-            }
-            if (AttackTimer >= AttackDelay + (LaserSweepLength * 4))
-            {
-                ResetAttack();
             }
         }
         private void LaserSweep(int timer)
@@ -232,7 +345,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             }
             else if (timer == 35)
             {
-                Projectile laser = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, AttackDirection, ModContent.ProjectileType<GateKeeperLaser>(), LaserSpinDamage, 1, 0, 0, 0);
+                Projectile laser = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, AttackDirection, ModContent.ProjectileType<GateKeeperLaser>(), LaserSweepDamage, 1, 0, 0, 0);
                 Lasers.Add(laser.ModProjectile as GateKeeperLaser);
                 Lasers[0].source = this;
                 Lasers[0].Tell = false;
@@ -257,6 +370,50 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                         Lasers[i].Projectile.active = false;
                     }
                     Lasers = new List<GateKeeperLaser>();
+                }
+            }
+        }
+
+        private void ShardVolley(float VolleyTimeInterval, float ShardSpacing = MathHelper.Pi / 12f, float AngleWidth = MathHelper.TwoPi, float TargetAngle = 0f)
+        {
+            if(AttackTimer % VolleyTimeInterval == 0)
+            {
+                for(int i = 0; i < AngleWidth/ShardSpacing; i++)
+                {
+                    GateKeeperShardVolleyProjectile shard = Projectile.newProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, 
+                        ((i * ShardSpacing) + TargetAngle - (AngleWidth/2)).ToRotationVector2 * 45f, 
+                        ModContent.ProjectileType<GateKeeperShardVolleyProjectile>(), ShardVolleyDamage, 1, 0, 0, 0) as 
+                        GateKeeperShardVolleyProjectile;
+                    shard.source = this;
+                }
+            }
+        }
+
+        private void Slam()
+        {
+            returnToCenter = false;
+            if(AttackTimer < AttackDelay)
+                return;
+            if(AttackTimer == AttackDelay)
+            {
+                RandomizeTarget();
+                NPC.Center = Main.player[NPC.target].Center + new Vector2(0,15 * 16);
+            } 
+            else if(AttackTimer < AttackDelay + SlamTelegraphLength)
+            {
+                NPC.Center.Y -= 0.1f;
+            }
+            else
+            {
+                if(NPC.Center.Y >= arena.Bottom - (NPC.height / 2.2))
+                {
+                    NPC.velocity = Vector2.Zero;
+
+                }
+                else
+                {
+                    NPC.velocity = new Vector2(0, 30f);
+                    ShardVolley(100 , MathHelper.Pi / 9, MathHelper.Pi, -MathHelper.PiOver2);
                 }
             }
         }

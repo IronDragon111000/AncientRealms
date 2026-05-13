@@ -3,9 +3,6 @@
 	<Import Project="..\tModLoader.targets" />
 	<PropertyGroup>
 	</PropertyGroup>
-	<ItemGroup>
-		<None Remove="AssGenConfig.txt" />
-	</ItemGroup>
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
@@ -21,7 +18,7 @@
 			<HintPath>lib\SubworldLibrary.dll</HintPath>
 		</Reference>
 
-		<PackageReference Include="AssGen" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Version="3.0.0" />
+		<PackageReference Include="AssGen" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 
 	</ItemGroup>
 	<ItemGroup>

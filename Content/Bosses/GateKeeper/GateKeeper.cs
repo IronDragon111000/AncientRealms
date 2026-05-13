@@ -271,17 +271,46 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 			if (AttackTimer == 1) //switching out attacks
 			{
 				AttackPhase++;
-				if (AttackPhase > 4)
-				AttackPhase = 1;
+				if (AttackPhase > 5)
+				AttackPhase = 0;
 			}
 
             switch (AttackPhase) //Attacks
 			{
-				case 0: break;
-				case 1: CrystalSmash(); break;
-				case 2: LaserSpin(); break;
-				case 3: CrystalSmash();break;
-				case 4: LaserSweeps();break;
+				case 0: 
+					ShardVolley(90);
+					if(Main.expertMode)
+						CrystalArcRing();
+					if(AttackTimer > 360 + AttackDelay)
+						ResetAttack();
+					break;
+				case 1: 
+					CrystalSmash(); 
+					if(AttackTimer > AttackDelay + CrystalSmashTelegraphLength * Crystals.Count + 240)
+						ResetAttack();
+					break;
+				case 2: 
+					LaserSpin(); 
+					if(Main.expertMode)
+						CrystalArcRing();
+					if(AttackTimer > AttackDelay + LaserSpinTelegraphLength + 200)
+                    	ResetAttack();
+					break;
+				case 3: 
+					CrystalSmash();
+					if(AttackTimer > AttackDelay + CrystalSmashTelegraphLength * Crystals.Count + 240)
+						ResetAttack();
+					break;
+				case 4: 
+					LaserSweeps();
+					if (AttackTimer >= AttackDelay + (LaserSweepLength * 4))
+                		ResetAttack();
+					break;
+				case 5: 
+					CrystalSmash();
+					if(AttackTimer > AttackDelay + CrystalSmashTelegraphLength * Crystals.Count + 240)
+						ResetAttack();
+					break;
 			}
 
 			if (CrystalsCurrentHealth <= 0)
@@ -296,15 +325,28 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 			if (AttackTimer == 1) //switching out attacks
 			{
 				AttackPhase++;
-				if (AttackPhase > 0)
+				if (AttackPhase > 2)
 				AttackPhase = 0;
 			}
 
             switch (AttackPhase) //Attacks
 			{
-				case 0: LaserSpin(); break;
-				case 1: break;
-				case 2: break;
+				case 0: 
+					LaserSpin(); 
+					ShardVolley(120);
+					if(AttackTimer > AttackDelay + LaserSpinTelegraphLength + 200)
+                    	ResetAttack();
+					break;
+				case 1: 
+					LaserConverge();
+					if(AttackTimer > AttackDelay + LaserConvergeTelegraphLength + 200)
+						ResetAttack();
+					break;
+				case 2: 
+					Slam();
+					if(AttackTimer > AttackDelay + SalmTelegraphLength + 150)
+						ResetAttack();
+					break;
 				case 3: break;
 				case 4: break;
 			}
