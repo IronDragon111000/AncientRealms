@@ -42,7 +42,7 @@ namespace AncientRealms.Content.SubWorlds.Mushindigo
                     }
                 }
                 GenerateSurfaceLayer(progress, configuration);
-                GenerateOres(progress, configuration);
+                //GenerateOres(progress, configuration);
                 //Set biome locations
             }
 
@@ -50,9 +50,9 @@ namespace AncientRealms.Content.SubWorlds.Mushindigo
             {
                 FastNoiseLite noise = new FastNoiseLite(Main.ActiveWorldFileData.Seed);
                 noise.SetNoiseType(NoiseType.OpenSimplex2);
-                noise.SetFrequency(0.01f);
+                noise.SetFrequency(0.006f);
 
-                 for(int i = 0; i < Main.maxTilesX; i++)
+                 for(int i = 0; i < Main.maxTilesX ; i++)
                 {
                     int surfaceHeight = (int)(noise.GetNoise(i, 0) * 20 + Main.worldSurface + -20);
                     for(int j = surfaceHeight; j < Main.rockLayer; j++)
@@ -67,7 +67,7 @@ namespace AncientRealms.Content.SubWorlds.Mushindigo
 
         public class MushindigoOceanGenpass : GenPass
         {
-            public MushindigoOceanGenpass() : base("Terrain", 1f);
+            public MushindigoOceanGenpass() : base("Terrain", 1f) {}
             protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
             {
                 progress.Message = "Making Oceans"; // Sets the text displayed for this pass
@@ -84,26 +84,51 @@ namespace AncientRealms.Content.SubWorlds.Mushindigo
                 bool leftSide = true;
                 if(Shore.X > Main.maxTilesX/2)
                     leftSide = false;
+                    
+                //clear any terrain above the waterline  
+                if(leftSide)
+                {  
+                    for(int i = 0; i < Shore.X; i++)
+                    {
+                        for(int j = 0; j < Shore.Y; j++)
+                        {
+                            Tile tile = Main.tile[i, j];
+                            tile.HasTile = false;
+                        }
+                    }
+                }else{
+                    for(int i = Shore.X; i < Main.maxTilesX; i++)
+                    {
+                        for(int j = 0; j < Shore.Y; j++)
+                        {
+                            Tile tile = Main.tile[i, j];
+                            tile.HasTile = false;
+                        }
+                    }
+                }
+                //then generate a sandy beach using a logarithmic curve
                 int x = Shore.X;
+                int maxDepth = Main.maxTilesY / 10;
+                float A = (maxDepth - 2)/ 2;
                 while((x >= 0 && leftSide) || (x < Main.maxTilesX && !leftSide))
                 {
-                    int floor = Shore.Y + 2 * (int)Math.Log(Math.Abs(Shore.X - x) + 2);
-                    for(int y = Shore.Y; y < floor; y++)
+                    int floor = Shore.Y + (int)(maxDepth/(1 + (A * Math.Pow(Math.E, -0.05f * Math.Abs(x - Shore.X)))));
+                    for(int y = Shore.Y; y < floor && y < Main.maxTilesY; y++)
                     {
-                        Tile tile = Main.tile[i, j];
-                        if(floor - y < 20)
+                        Tile tile = Main.tile[x, y];
+                        if(floor - y < 25)
                         {
                             tile.HasTile = true;
                             tile.TileType = TileID.Sand;    
                         }else if(y - Shore.Y > 5)
                         {
-                            tile.HasTile = true;
-                            tile.TileType = TileID.Water;
+                            tile.HasTile = false;
+                            tile.LiquidType = LiquidID.Water;
+                            tile.LiquidAmount = 255;
                         }
                         else
                         {    
                             tile.HasTile = false;
-                            tile.TileType = TileID.Air;
                         }
                     }
                     if(leftSide){x--;}else{x++;}
@@ -115,45 +140,70 @@ namespace AncientRealms.Content.SubWorlds.Mushindigo
                 if(Shore.X > Main.maxTilesX/2)
                     leftSide = false;
                 List<Point16> PillarLocations = new List<Point16>();
+                int maxDepth = 6 * (Main.maxTilesY / 10);
+                float A = (maxDepth - Shore.Y) / Shore.Y;
                 int x = Shore.X;
+                
+                //clear any terrarian above the waterline
+                if(leftSide)
+                {  
+                    for(int i = 0; i < Shore.X; i++)
+                    {
+                        for(int j = 0; j < Shore.Y; j++)
+                        {
+                            Tile tile = Main.tile[i, j];
+                            tile.HasTile = false;
+                        }
+                    }
+                }else{
+                    for(int i = Shore.X; i < Main.maxTilesX; i++)
+                    {
+                        for(int j = 0; j < Shore.Y; j++)
+                        {
+                            Tile tile = Main.tile[i, j];
+                            tile.HasTile = false;
+                        }
+                    }
+                }
+                //then generate the coast using a logistic curve, with random stone pillars for variety
                 while((x >= 0 && leftSide) || (x < Main.maxTilesX && !leftSide))
                 {
-                    int floor = Shore.Y + 2 * (int)Math.Pow(Math.Abs(Shore.X - x) + 1, 4);
-                    for(int y = Shore.Y; y < floor; y++)
+                    int floor = (int)(maxDepth/(1 + (A * Math.Pow(Math.E, -0.025f * Math.Abs(x - Shore.X)))));
+                    for(int y = Shore.Y; y < floor && y < Main.maxTilesY; y++)
                     {
                         Tile tile = Main.tile[x, y];
-                        if(floor - y < 20)
+                        if(floor - y < 25)
                         {
                             tile.HasTile = true;
                             tile.TileType = TileID.Sand;    
                         }else if(y - Shore.Y > 5)
                         {
-                            tile.HasTile = true;
-                            tile.TileType = TileID.Water;
+                            tile.HasTile = false;
+                            tile.LiquidType = LiquidID.Water;
+                            tile.LiquidAmount = 255;
                         }
                         else
                         {    
                             tile.HasTile = false;
-                            tile.TileType = TileID.Air;
                         }
                         int rand = WorldGen.genRand.Next(0, 50000);
-                        if(rand > 49999)
+                        if(rand > 49990)
                         {
                             PillarLocations.Add(new Point16(x, y));
                         }
                     }
                     foreach(Point16 location in PillarLocations)
                     {
-                        GenerateStonePillar(location, WorldGen.genRand.Next(5, 8), WorldGen.genRand.Next(15, 20));
+                        GenerateStonePillar(location, WorldGen.genRand.Next(12, 18), WorldGen.genRand.Next(30, 45));
                     }
                     if(leftSide){x--;}else{x++;}
-                }   
+                } 
             }
             private void GenerateStonePillar(Point16 center, int Width, int Height)
             {
                 for(int y = center.Y - Height/2; y < center.Y + Height/2; y++)
                 {
-                    int localWidth = (int)(Width * 0.5f * Math.Sqrt(1 - Math.Pow((y - center.Y) / (Height * 0.5f), 2)));
+                    int localWidth = (int)Math.Ceiling(Width * 0.5f * Math.Sqrt(1 - Math.Pow((y - center.Y) / (Height * 0.5f), 2)));
                     for(int x = center.X - localWidth/2; x < center.X + localWidth/2; x++)
                     {    
                         Tile tile = Main.tile[x,y];
@@ -166,7 +216,7 @@ namespace AncientRealms.Content.SubWorlds.Mushindigo
 
         public class MushindigoUnderworldGenpass : GenPass
         {
-            public MushindigoUnderworldGenpass() : base("Terrain", 1f);
+            public MushindigoUnderworldGenpass() : base("Terrain", 1f){}
             protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
             {
                 progress.Message = "Making Shroom Hell"; // Sets the text displayed for this pass
@@ -176,7 +226,7 @@ namespace AncientRealms.Content.SubWorlds.Mushindigo
 
         public class MushindigoHardModeGenpass : GenPass
         {
-            public MushindigoHardModeGenpass() : base("Terrain", 1f);
+            public MushindigoHardModeGenpass() : base("Terrain", 1f){}
             protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
             {
             }

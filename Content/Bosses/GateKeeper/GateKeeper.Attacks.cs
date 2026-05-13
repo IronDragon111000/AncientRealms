@@ -18,6 +18,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
     public sealed partial class GateKeeper : ModNPC
     {
         public Vector2 AttackDirection;
+        public Vector2 destination;
         public List<GateKeeperLaser> Lasers = new List<GateKeeperLaser>();
 
         // Attack Damage for attacks
@@ -35,7 +36,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         public float LaserConvergeTelegraphLength = 60f;
 
         //Attack Lengths
-        public float LaserSweepLength = 95;
+        public float LaserSweepLength = 120f;
 
         public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
         {
@@ -184,61 +185,73 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             returnToCenter = false;
             if(AttackTimer > AttackDelay)
             {
-                if(NPC.Center.Y - arena.Top > 5)
+                if(NPC.Center.Y - Main.player[NPC.target].Center.Y - (10 * 16) > 5)
                 {
-                    NPC.velocity.Y = -2f;
+                    NPC.velocity.Y = -5f;
                 }
-                else if(NPC.Center.Y - arena.Top < 5)
+                else if(NPC.Center.Y - Main.player[NPC.target].Center.Y - (10 * 16) < -5)
                 {
-                    NPC.velocity.Y = 2f;
+                    NPC.velocity.Y = 5f;
                 }
                 else
                 {
                     NPC.velocity.Y = 0f;
                 }
-                bool leftSide = true;
-                if(((AttackTimer - AttackDelay) / LaserSweepLength) % 2 == 1)
-                    leftSide = false;
-                LaserSweep((AttackTimer - AttackDelay) % LaserSweepLength, leftSide);
+                LaserSweep((int)((AttackTimer - AttackDelay) % LaserSweepLength));
+            }
+            if (AttackTimer >= AttackDelay + (LaserSweepLength * 4))
+            {
+                ResetAttack();
             }
         }
-        private void LaserSweep(int timer, bool leftSide)
+        private void LaserSweep(int timer)
         {
+            bool leftSide = true;
             AttackDirection = new Vector2(0, 1);
             if(timer == 0)
             {
+                NPC.velocity.X = 0f;
                 RandomizeTarget();
             }
-            if(timer < 15)
+            if(destination.X - arena.Center.X > 0)
             {
-                float targetX = Main.player[NPC.target].Center.X;
-                if(leftSide){targetX += -5f;}else{targetX += 5f;}
-                if(NPC.Center.X - targetX> 5){
-                    NPC.velocity.X = 5f;
-                }
-                else if(NPC.Center.X - targetX < 5)
-                {
-                    NPC.velocity.X = -5f;
+                leftSide = false;
+            }
+            if(timer < 35)
+            {
+                destination = new Vector2(Main.player[NPC.target].Center.X, arena.Top);
+                if(leftSide){destination.X += -50f;}else{destination.X += 50f;}
+                if(Math.Abs(NPC.Center.X - destination.X) > 5){
+                    NPC.velocity.X = (destination.X - NPC.Center.X) / 10f;
                 }
                 else
                 {
                     NPC.velocity.X = 0f;
                 }
+                
             }
-            else if (timer == 15)
+            else if (timer == 35)
             {
                 Projectile laser = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, AttackDirection, ModContent.ProjectileType<GateKeeperLaser>(), LaserSpinDamage, 1, 0, 0, 0);
                 Lasers.Add(laser.ModProjectile as GateKeeperLaser);
                 Lasers[0].source = this;
                 Lasers[0].Tell = false;
             } 
-            else if(timer > 15)
+            else 
             {
                 if(leftSide){NPC.velocity.X = 5f;}else{NPC.velocity.X = -5f;}
                 //End Attack
-                if(timer >= LaserSweepLength)
+                if(timer >= LaserSweepLength - 1)
                 {
-                    ResetAttack();
+                    for(int i = 0; i < Lasers.Count; i++)
+                    {
+                        Lasers[i].Projectile.active = false;
+                    }
+                    Lasers = new List<GateKeeperLaser>();
+                }
+                if (!arena.Contains(NPC.Center.ToPoint()))
+                {
+                    AttackTimer += LaserSweepLength - timer -1; //Skip to next sweep if we leave the arena
                     for(int i = 0; i < Lasers.Count; i++)
                     {
                         Lasers[i].Projectile.active = false;

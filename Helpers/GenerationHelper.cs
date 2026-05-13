@@ -14,7 +14,7 @@ namespace AncientRealms.Helpers
 {
     public static class GenerationHelper
     {
-        public int GetHighestBlockY(int x) 
+        public static int GetHighestBlockY(int x) 
         {
             for (int y = 0; y < Main.maxTilesY; y++) {
                 // Check if the tile is active (not air)

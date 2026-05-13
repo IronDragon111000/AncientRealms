@@ -213,9 +213,9 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 
 			if(returnToCenter)
 			{
-				if(NPC.Center.Distance(arena.Center) > 5)
+				if(NPC.Center.Distance(arena.Center.ToVector2()) > 5)
                 {
-                    NPC.velocity = Vector2.Normalize(arena.Center - NPC.Center) * 4f; 
+                    NPC.velocity = Vector2.Normalize(arena.Center.ToVector2() - NPC.Center) * 4f; 
                 } else                {
                     NPC.velocity = Vector2.Zero;
                 }
@@ -271,7 +271,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 			if (AttackTimer == 1) //switching out attacks
 			{
 				AttackPhase++;
-				if (AttackPhase > 2)
+				if (AttackPhase > 4)
 				AttackPhase = 1;
 			}
 
