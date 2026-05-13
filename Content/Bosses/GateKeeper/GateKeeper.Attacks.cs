@@ -35,6 +35,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         // Telegraph Lengths for attacks
         public float CrystalSmashTelegraphLength = 45f;
         public float CrystalSmashProjectileTelegraphLength = 20f;
+        public float LaserSpinTelegraphLength = 90f;
         public float LaserConvergeTelegraphLength = 30f;
         public float SlamTelegraphLength = 20f;
 
@@ -130,16 +131,16 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                         Vector2 DirectionToBoss = Vector2.Normalize(NPC.Center - Crystals[i].NPC.Center);;
                         if(AttackTimer < AttackDelay + 30)
                         {
-                            Crystals[i].velocity = DirectionToBoss * (-10f);
-                            Crystals[i].CanHitPlayer = false;
+                            Crystals[i].NPC.velocity = DirectionToBoss * (-10f);
+                            Crystals[i].NPC.friendly = true;
                         } else
                         {
-                            Crystals[i].velocity = DirectionToBoss * 3f;
-                            Crystals[i].CanHitPlayer = true;
+                            Crystals[i].NPC.velocity = DirectionToBoss * 3f;
+                            Crystals[i].NPC.friendly = false;
                         }
-                        Crystals[i].rotation = DirectionToBoss.ToRotation() + MathHelper.PiOver2;
+                        Crystals[i].NPC.rotation = DirectionToBoss.ToRotation() + MathHelper.PiOver2;
                         float AngluarSpeed = MathHelper.TwoPi / 180;
-                        Crystals[i].velocity += ((NPC.Center - Crystals[i].NPC.Center) * AngluarSpeed).RotatedBy(MathHelper.PiOver2);
+                        Crystals[i].NPC.velocity += ((NPC.Center - Crystals[i].NPC.Center) * AngluarSpeed).RotatedBy(MathHelper.PiOver2);
                     }
                 }
             }
@@ -199,12 +200,12 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 if(rand.Next(10) >= 5)
                 {
                     destination = new Vector2(arena.Right, arena.Center.Y);
-                    AttackDirection = (MathHelper.Pi + rand.Next(-45, 45).ToRadians()).ToRotationVector2();
+                    AttackDirection = MathHelper.ToRadians(MathHelper.Pi + ((float)rand.Next(-45, 45))).ToRotationVector2();
                 }
                 else
                 {
                     destination = new Vector2(arena.Left, arena.Center.Y);
-                    AttackDirection = rand.Next(-45, 45).ToRadians().ToRotationVector2();
+                    AttackDirection = MathHelper.ToRadians(rand.Next(-45, 45)).ToRotationVector2();
                 }
             }
             if((destination - NPC.Center).Length() > 5f)
@@ -240,17 +241,17 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 Lasers[3].source = this;
             }
             if(AttackTimer > AttackDelay + LaserConvergeTelegraphLength){
-                Lasers[0].tell = false;
-                Lasers[1].tell = true;
+                Lasers[0].Tell = false;
+                Lasers[1].Tell = true;
                 //Adjust aim
                 float AimSpeed = MathHelper.ToRadians(0.75f);
-                Vector2 aim = Lasers[2].velocity;
+                Vector2 aim = Lasers[2].Projectile.velocity;
                 if (aim.HasNaNs()) {
                     aim = -Vector2.UnitY;
                 }
 
                 // Calculate current and target angles
-                float currentAngle = Lasers[0].velocity.ToRotation();
+                float currentAngle = Lasers[0].Projectile.velocity.ToRotation();
                 float targetAngle = aim.ToRotation();
 
                 // Get the smallest angle difference
@@ -261,14 +262,14 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 float newAngle = currentAngle + turnAmount;
 
                 // Set new AttackDirection
-                Lasers[0].velocity = newAngle.ToRotationVector2();
-                Vector2 aim1 = Lasers[3].velocity;
+                Lasers[0].Projectile.velocity = newAngle.ToRotationVector2();
+                Vector2 aim1 = Lasers[3].Projectile.velocity;
                 if (aim1.HasNaNs()) {
                     aim1 = -Vector2.UnitY;
                 }
 
                 // Calculate current and target angles
-                float currentAngle1 = Lasers[1].velocity.ToRotation();
+                float currentAngle1 = Lasers[1].Projectile.velocity.ToRotation();
                 float targetAngle1 = aim1.ToRotation();
 
                 // Get the smallest angle difference
@@ -279,7 +280,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 float newAngle1 = currentAngle1 + turnAmount1;
 
                 // Set new AttackDirection
-                Lasers[1].velocity = newAngle1.ToRotationVector2();
+                Lasers[1].Projectile.velocity = newAngle1.ToRotationVector2();
 
                 if (AttackDirection != aim) {
                     NPC.netUpdate = true;
@@ -380,11 +381,10 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             {
                 for(int i = 0; i < AngleWidth/ShardSpacing; i++)
                 {
-                    GateKeeperShardVolleyProjectile shard = Projectile.newProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, 
-                        ((i * ShardSpacing) + TargetAngle - (AngleWidth/2)).ToRotationVector2 * 45f, 
-                        ModContent.ProjectileType<GateKeeperShardVolleyProjectile>(), ShardVolleyDamage, 1, 0, 0, 0) as 
-                        GateKeeperShardVolleyProjectile;
-                    shard.source = this;
+                    Projectile shard = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, 
+                        ((i * ShardSpacing) + TargetAngle - (AngleWidth/2)).ToRotationVector2() * 45f, 
+                        ModContent.ProjectileType<GateKeeperShardVolleyProjectile>(), ShardVolleyDamage, 1, 0, 0, 0);
+                    (shard.ModProjectile as GateKeeperShardVolleyProjectile).source = this;
                 }
             }
         }
@@ -401,7 +401,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             } 
             else if(AttackTimer < AttackDelay + SlamTelegraphLength)
             {
-                NPC.Center.Y -= 0.1f;
+                NPC.Center += new Vector2(0, 0.1f);
             }
             else
             {

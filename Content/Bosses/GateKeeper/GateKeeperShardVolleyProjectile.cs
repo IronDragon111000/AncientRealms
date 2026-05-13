@@ -28,7 +28,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         private float laserLength = 2000f;
         private Vector2 endPoint = Vector2.Zero;
 		public bool Tell = true;
-        public ref float timer => NPC.AI[1];
+        internal ref float timer => ref Projectile.ai[1];
 		public GateKeeper source;
         public override void SetDefaults()
         {
@@ -36,24 +36,23 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             Projectile.height = 6;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
-            Projectile.hostile = true;
+            Projectile.hostile = false;
             Projectile.friendly = false;
             Projectile.ignoreWater = true;
             Projectile.timeLeft = 600;
             Projectile.aiStyle = -1;
-            Projectile.CanHitPlayer = false;
         }
 
         public override void AI()
         {
             if(Tell)
             {
-                Projectile.CanHitPlayer = false;
+                Projectile.hostile = false;
                 Projectile.Center = source.NPC.Center + Projectile.velocity;
-                endPoint = Proctile.Center + Projectile.velocity.Normalize() * laserLength;
+                endPoint = Projectile.Center + Vector2.Normalize(Projectile.velocity) * laserLength;
             }else
             {
-                Projectile.CanHitPlayer = true;
+                Projectile.hostile = true;
             }
         }
 
@@ -71,6 +70,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 DrawBeam(Main.spriteBatch, texture, startPosition, endPosition, drawScale, Color.SkyBlue * 0.02f);
                 return false;
             }
+            return true;
         }
         private void DrawBeam(SpriteBatch spriteBatch, Texture2D texture, Vector2 startPosition, Vector2 endPosition, Vector2 drawScale, Color beamColor) {
 			Utils.LaserLineFraming lineFraming = (int stage, Vector2 currentPosition, float distanceLeft, Rectangle lastFrame, out float distCovered, out Rectangle frame, out Vector2 origin, out Color color) =>

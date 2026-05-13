@@ -1,3 +1,4 @@
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -36,7 +37,7 @@ namespace AncientRealms.Content.Items.Weapons.GateKeeperWeaponDrops
 			return player.ownedProjectileCounts[Item.shoot] < 1;
 		}
 
-		public override bool? UseItem(Player player) {
+		public override Nullable<bool> UseItem(Player player)/* tModPorter Suggestion: Return null instead of false */ {
 			// Because we're skipping sound playback on use animation start, we have to play it ourselves whenever the item is actually used.
 			if (!Main.dedServ && Item.UseSound.HasValue) {
 				SoundEngine.PlaySound(Item.UseSound.Value, player.Center);

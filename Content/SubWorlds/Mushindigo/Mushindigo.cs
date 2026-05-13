@@ -234,16 +234,15 @@ namespace AncientRealms.Content.SubWorlds.Mushindigo
             
         }
 
-        public class MushindigoNPC : ModNPC
+        public class MushindigoNPC : GlobalNPC
         {
-            public override EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
+            public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
             {
-                if(SubWorldLibrary.SubWorldSystem.IsActive<Mushindigo>())
+                if(SubworldSystem.IsActive<Mushindigo>())
                 {
-                    pool.clear;
-                    if(MushindigoSpiderNestBiome.isBiomeActive())
+                    pool.Clear();
+                    if(spawnInfo.Player.InModBiome<MushindigoSpiderNestBiome>())
                     {
-                        
                     }
                 }
             }

@@ -3,10 +3,13 @@
 	<Import Project="..\tModLoader.targets" />
 	<PropertyGroup>
 	</PropertyGroup>
-  <ItemGroup>
-  </ItemGroup>
-  <ItemGroup>
-  </ItemGroup>
+	
+	<!-- FIX 1: Explicitly pass your mod assets to the Roslyn Source Generator -->
+	<ItemGroup>
+		<AdditionalFiles Include="**/*.png" />
+		<AdditionalFiles Include="AssGenConfig.txt" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<Reference Include="NetEasy">
 			<HintPath>lib\NetEasy_v0.1.8.dll</HintPath>
@@ -18,17 +21,11 @@
 			<HintPath>lib\SubworldLibrary.dll</HintPath>
 		</Reference>
 
-		<PackageReference Include="AssGen" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-
-	</ItemGroup>
-	<ItemGroup>
+		<PackageReference Include="AssGen" Version="3.0.0" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 	<ItemGroup>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Update="tModLoader.CodeAssist" Version="0.1.5" />
+		<PackageReference Update="tModLoader.CodeAssist" Version="0.1.5" />
 	</ItemGroup>
 
 </Project>

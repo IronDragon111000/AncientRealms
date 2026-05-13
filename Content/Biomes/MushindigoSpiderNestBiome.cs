@@ -32,7 +32,7 @@ namespace AncientRealms.Content.Biomes
 		public static bool onScreen;
 		public override bool IsBiomeActive(Player player)
         {
-            return SubworldLibrary.SubworldSystem.IsActive<Mushindigo>() && player.Center() > Main.rockLayer;
+            return SubworldLibrary.SubworldSystem.IsActive<Mushindigo>() && player.Center.Y > Main.rockLayer;
         }
 	}
 }
