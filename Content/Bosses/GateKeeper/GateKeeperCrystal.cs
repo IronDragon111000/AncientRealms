@@ -98,6 +98,21 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 NPC.active = false;
                 return;
             }
+
+            if(Arcing)
+            {
+                if(parent.AttackTimer % 180 == 0)
+                {
+                    for (int k = 0; k < Main.maxPlayers; k++) //laser collision
+                    {
+                        Player Player = Main.player[k];
+                        if(CollisionHelper.CheckCircularCollision(Projectile.Center, 64, Player.Hitbox))
+                        {
+                            Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(k, Projectile.whoAmI), NPC.damage, 0, false, false, -1, false);
+                        }
+                    }
+                }
+            }
         }
 
         public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
@@ -175,5 +190,17 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 
 			NPC.netUpdate = true;
 		}
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+            if(Arcing)
+            {  
+                Color tellColor = Color.SkyBlue;
+                float tellOpacity = 0.01f + ((parent.AttackTimer % 180 / 270) * 
+                    (parent.AttackTimer % (180 - (parent.AttackTimer % 180)) / (180 - (parent.AttackTimer % 180))));
+                Texture2D telegraphTexture = Request<Texture2D>(Texture + "ExplosionTell").Value;
+			    Main.spriteBatch.Draw(telegraphTexture, NPC.Center - Main.screenPosition - new Vector2(telegraphTexture.Width / 2, telegraphTexture.Height / 2), default, tellColor * tellOpacity);
+            }
+        }
     }
 }

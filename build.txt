@@ -2,4 +2,4 @@ displayName = Ancient Realms
 author = Orion
 version = 0.1
 modReferences = SubworldLibrary
-dllReferences = StructureHelper,  NetEasy_v0.1.8, NetSerializer
+dllReferences = StructureHelper

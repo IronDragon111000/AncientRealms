@@ -63,8 +63,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         {
             if(Tell)
             {
-                //var texture = Assets.Bosses.GateKeeper.GateKeeperShardVolleyProjectileTell.Value;
-                var texture = TextureAssets.Projectile[Type].Value;
+                var texture = Request<Texture2D>(Texture + "Tell").Value;
 
                 Vector2 drawScale = new Vector2(Projectile.scale);
 

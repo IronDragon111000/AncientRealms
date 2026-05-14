@@ -110,9 +110,8 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 			SpawnAnimation = 1,
 			FirstPhase = 2,
 			SecondPhase = 3,
-            ThirdPhase = 4,
-			Leaving = 5,
-			Dying = 6
+			Leaving = 4,
+			Dying = 5
 		}
 
         public override void AI()
@@ -165,10 +164,6 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 
                 case (int)AIStates.SecondPhase:
                     SecondPhase();
-                    break;
-
-                case (int)AIStates.ThirdPhase:
-                    ThirdPhase();
                     break;
 
                 case (int)AIStates.Leaving:
@@ -352,25 +347,6 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 			}
 		}
 
-		private void ThirdPhase()
-		{
-			if (AttackTimer == 1) //switching out attacks
-			{
-				AttackPhase++;
-				if (AttackPhase > 1)
-					AttackPhase = 1;
-			}
-
-            switch (AttackPhase) //Attacks
-			{
-				case 0: break;
-				case 1: break;
-				case 2: break;
-				case 3: break;
-				case 4: break;
-			}
-		}
-
 		public void SummonCrystals() {
 			if(SpawnedCrystals)
 				return;
@@ -406,9 +382,6 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 					NetMessage.SendData(MessageID.SyncNPC, number: CrystalNPC.whoAmI);
 				}
 			}
-
-			
 		}
-
     }
 }

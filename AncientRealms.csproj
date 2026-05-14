@@ -4,28 +4,14 @@
 	<PropertyGroup>
 	</PropertyGroup>
 	
-	<!-- FIX 1: Explicitly pass your mod assets to the Roslyn Source Generator -->
-	<ItemGroup>
-		<AdditionalFiles Include="**/*.png" />
-		<AdditionalFiles Include="AssGenConfig.txt" />
-	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="NetEasy">
-			<HintPath>lib\NetEasy_v0.1.8.dll</HintPath>
-		</Reference>
 		<Reference Include="StructureHelper">
 			<HintPath>lib\StructureHelper.dll</HintPath>
 		</Reference>
 		<Reference Include="SubworldLibrary">
 			<HintPath>lib\SubworldLibrary.dll</HintPath>
 		</Reference>
-		<Reference Update="StructureHelper">
-    		<Private>false</Private>
-   	 		<SpecificVersion>false</SpecificVersion>
- 		</Reference>
-
-		<PackageReference Include="AssGen" Version="3.0.0" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 	<ItemGroup>
