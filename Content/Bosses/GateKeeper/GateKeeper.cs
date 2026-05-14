@@ -344,7 +344,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 					break;
 				case 2: 
 					Slam();
-					if(AttackTimer > AttackDelay + SlamTelegraphLength + 150)
+					if(AttackTimer > AttackDelay + SlamTelegraphLength + 200)
 						ResetAttack();
 					break;
 				case 3: break;

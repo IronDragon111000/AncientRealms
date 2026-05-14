@@ -20,6 +20,10 @@
 		<Reference Include="SubworldLibrary">
 			<HintPath>lib\SubworldLibrary.dll</HintPath>
 		</Reference>
+		<Reference Update="StructureHelper">
+    		<Private>false</Private>
+   	 		<SpecificVersion>false</SpecificVersion>
+ 		</Reference>
 
 		<PackageReference Include="AssGen" Version="3.0.0" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>

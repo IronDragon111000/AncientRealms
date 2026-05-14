@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj": {}
+    "c:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj": {}
   },
   "projects": {
-    "C:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj": {
+    "c:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj",
+        "projectUniqueName": "c:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj",
         "projectName": "AncientRealms",
-        "projectPath": "C:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj",
+        "projectPath": "c:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj",
         "packagesPath": "C:\\Users\\IronDragon\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\obj\\",
+        "outputPath": "c:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\IronDragon\\AppData\\Roaming\\NuGet\\NuGet.Config",

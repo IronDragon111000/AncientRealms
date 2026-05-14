@@ -25,7 +25,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 {
     public class GateKeeperShardVolleyProjectile : ModProjectile
     {
-        private float laserLength = 2000f;
+        private float laserLength = 1000f;
         private Vector2 endPoint = Vector2.Zero;
 		public bool Tell = true;
         internal ref float timer => ref Projectile.ai[1];
@@ -45,6 +45,9 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 
         public override void AI()
         {
+            timer--;
+            if(timer <= 0)
+                Tell = false;
             if(Tell)
             {
                 Projectile.hostile = false;
@@ -60,7 +63,8 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         {
             if(Tell)
             {
-                var texture = Assets.Bosses.GateKeeper.GateKeeperShardVolleyProjectileTell.Value;
+                //var texture = Assets.Bosses.GateKeeper.GateKeeperShardVolleyProjectileTell.Value;
+                var texture = TextureAssets.Projectile[Type].Value;
 
                 Vector2 drawScale = new Vector2(Projectile.scale);
 

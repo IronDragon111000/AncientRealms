@@ -200,12 +200,12 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 if(rand.Next(10) >= 5)
                 {
                     destination = new Vector2(arena.Right, arena.Center.Y);
-                    AttackDirection = MathHelper.ToRadians(MathHelper.Pi + ((float)rand.Next(-45, 45))).ToRotationVector2();
+                    AttackDirection = (MathHelper.Pi + MathHelper.ToRadians((float)rand.Next(-30, 30))).ToRotationVector2();
                 }
                 else
                 {
                     destination = new Vector2(arena.Left, arena.Center.Y);
-                    AttackDirection = MathHelper.ToRadians(rand.Next(-45, 45)).ToRotationVector2();
+                    AttackDirection = MathHelper.ToRadians(rand.Next(-30, 30)).ToRotationVector2();
                 }
             }
             if((destination - NPC.Center).Length() > 5f)
@@ -232,20 +232,31 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 
                 // These 2 show where the other 2 lasers final positions will be. They will always have tell = true
                 Projectile laser2 = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, 
-                    AttackDirection.RotatedBy(MathHelper.Pi / 6f), ModContent.ProjectileType<GateKeeperLaser>(), LaserSpinDamage, 1, 0, 0, 0);
+                    AttackDirection.RotatedBy(-MathHelper.Pi / 8f), ModContent.ProjectileType<GateKeeperLaser>(), LaserSpinDamage, 1, 0, 0, 0);
                 Lasers.Add(laser2.ModProjectile as GateKeeperLaser);
                 Lasers[2].source = this;
                 Projectile laser3 = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, 
-                    AttackDirection.RotatedBy(-MathHelper.Pi / 6f), ModContent.ProjectileType<GateKeeperLaser>(), LaserSpinDamage, 1, 0, 0, 0);
+                    AttackDirection.RotatedBy(MathHelper.Pi / 8f), ModContent.ProjectileType<GateKeeperLaser>(), LaserSpinDamage, 1, 0, 0, 0);
                 Lasers.Add(laser3.ModProjectile as GateKeeperLaser);
                 Lasers[3].source = this;
             }
             if(AttackTimer > AttackDelay + LaserConvergeTelegraphLength){
                 Lasers[0].Tell = false;
-                Lasers[1].Tell = true;
+                Lasers[1].Tell = false;
                 //Adjust aim
                 float AimSpeed = MathHelper.ToRadians(0.75f);
                 Vector2 aim = Lasers[2].Projectile.velocity;
+                Vector2 aim1 = Lasers[3].Projectile.velocity;
+                if(destination.X < arena.Center.X)
+                {
+                    aim = Lasers[2].Projectile.velocity;
+                    aim1 = Lasers[3].Projectile.velocity;
+                }
+                else
+                {
+                    aim = Lasers[3].Projectile.velocity;
+                    aim1 = Lasers[2].Projectile.velocity;
+                }
                 if (aim.HasNaNs()) {
                     aim = -Vector2.UnitY;
                 }
@@ -263,7 +274,6 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 
                 // Set new AttackDirection
                 Lasers[0].Projectile.velocity = newAngle.ToRotationVector2();
-                Vector2 aim1 = Lasers[3].Projectile.velocity;
                 if (aim1.HasNaNs()) {
                     aim1 = -Vector2.UnitY;
                 }
@@ -303,11 +313,11 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             returnToCenter = false;
             if(AttackTimer > AttackDelay)
             {
-                if(NPC.Center.Y - Main.player[NPC.target].Center.Y - (10 * 16) > 5)
+                if(NPC.Center.Y - Main.player[NPC.target].Center.Y + (10 * 16) > 5)
                 {
                     NPC.velocity.Y = -5f;
                 }
-                else if(NPC.Center.Y - Main.player[NPC.target].Center.Y - (10 * 16) < -5)
+                else if(NPC.Center.Y - Main.player[NPC.target].Center.Y + (10 * 16) < -5)
                 {
                     NPC.velocity.Y = 5f;
                 }
@@ -375,7 +385,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             }
         }
 
-        private void ShardVolley(float VolleyTimeInterval, float ShardSpacing = MathHelper.Pi / 12f, float AngleWidth = MathHelper.TwoPi, float TargetAngle = 0f)
+        private void ShardVolley(float VolleyTimeInterval, float ShardSpacing = MathHelper.Pi / 8f, float AngleWidth = MathHelper.TwoPi, float TargetAngle = 0f)
         {
             if(AttackTimer % VolleyTimeInterval == 0)
             {
@@ -383,7 +393,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 {
                     Projectile shard = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, 
                         ((i * ShardSpacing) + TargetAngle - (AngleWidth/2)).ToRotationVector2() * 45f, 
-                        ModContent.ProjectileType<GateKeeperShardVolleyProjectile>(), ShardVolleyDamage, 1, 0, 0, 0);
+                        ModContent.ProjectileType<GateKeeperShardVolleyProjectile>(), ShardVolleyDamage, 1, 0, 120f, 120f);
                     (shard.ModProjectile as GateKeeperShardVolleyProjectile).source = this;
                 }
             }
@@ -413,7 +423,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 else
                 {
                     NPC.velocity = new Vector2(0, 30f);
-                    ShardVolley(100 , MathHelper.Pi / 9, MathHelper.Pi, -MathHelper.PiOver2);
+                    ShardVolley(100 , MathHelper.Pi / 7, MathHelper.Pi, -MathHelper.PiOver2);
                 }
             }
         }
