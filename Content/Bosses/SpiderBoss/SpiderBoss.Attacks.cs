@@ -3,6 +3,7 @@ namespace AncientRealms.Content.Bosses.SpiderBoss
 {
     public sealed partial class SpiderBoss : ModNPC
     {
+		private List<Projectile> projectiles = new List<Projectile>();
 		internal Vector2 TargetPosition;
         public void ResetAttack()
 		{
@@ -56,6 +57,33 @@ namespace AncientRealms.Content.Bosses.SpiderBoss
 			NPC.rotation = direction.ToRotation() + MathHelper.PiOver2;
 			if(timer > tellTime + 5)
 				NPC.velocity = direction * speed;
+		}
+
+		private void AcidBall(Vector2 aim, float speed, int timer, int tellTime = 60)
+		{
+			NPC.rotation = Vector2.ToRotation(aim) + MathHelper.PiOver2;
+			if(timer == 1)
+			{
+				projectiles.Add(Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center + 16f *(NPC.rotation - MathHelper.PiOver2).ToRotationVector2(), 
+                    Vector2.Zero), 
+                    ModContent.ProjectileType<SpiderBossAcidBigProjectile>(), 45, 1, 0, 0, 0);
+			}
+			for(int i = projectiles.Count - 1; i >= 0; i--)
+			{
+				if(projectiles[i].type == ModContent.ProjectileType<SpiderBossAcidBigProjectile>())
+				{
+					SpiderBossAcidBigProjectile acidBall = projectiles[i] as SpiderBossAcidBigProjectile;
+					acidBall.Projectile.Center = NPC.Center + 16f *(NPC.rotation - MathHelper.PiOver2).ToRotationVector2();
+					acidBall.Projectile.timeLeft = 90;
+					acidBall.phase = Math.Floor(timer/6f);
+					if(timer >  tellTime)
+					{
+						acidBall.phase = 6;
+						acidBall.velocity = speed *(NPC.rotation - MathHelper.PiOver2).ToRotationVector2();
+						projectiles.RemoveAt(i);
+					}
+				}
+			}
 		}
     }
 }

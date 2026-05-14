@@ -189,7 +189,7 @@ namespace AncientRealms.Content.Bosses.SpiderBoss
                 if (AttackTimer == 1) //switching out attacks
                 {
                     AttackPhase++;
-                    if (AttackPhase > 0)
+                    if (AttackPhase > 1)
                     { 
                         AttackPhase = 0;
                     }
@@ -201,6 +201,8 @@ namespace AncientRealms.Content.Bosses.SpiderBoss
                         if(AttackTimer > 150) AttackTimer = 0;
                         break;
                     case 1:
+                        AcidBall(Main.player.Where(n => n.active && !n.dead).ToList()[0].Center, 8f, (int)AttackTimer);
+                        if(AttackTimer > 70) AttackTimer = 0;
                         break;
                 }
             }
