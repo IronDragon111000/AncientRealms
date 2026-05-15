@@ -1,10 +1,9 @@
 {
   "version": 2,
-  "dgSpecHash": "OGBUjR70rak=",
+  "dgSpecHash": "zkfQsVMo+cg=",
   "success": true,
-  "projectFilePath": "c:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj",
+  "projectFilePath": "C:\\Users\\IronDragon\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\AncientRealms\\AncientRealms.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\IronDragon\\.nuget\\packages\\assgen\\3.0.0\\assgen.3.0.0.nupkg.sha512",
     "C:\\Users\\IronDragon\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.26\\microsoft.netcore.app.ref.8.0.26.nupkg.sha512",
     "C:\\Users\\IronDragon\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.26\\microsoft.windowsdesktop.app.ref.8.0.26.nupkg.sha512",
     "C:\\Users\\IronDragon\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.26\\microsoft.aspnetcore.app.ref.8.0.26.nupkg.sha512"

@@ -159,7 +159,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             if(AttackTimer > AttackDelay)
             {
                 //Adjust aim
-                float AimSpeed = MathHelper.ToRadians(0.67f);
+                float AimSpeed = MathHelper.ToRadians(0.64f);
                 // Get the player's current aiming direction as a normalized vector.
                 Vector2 aim = Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center);
                 if (aim.HasNaNs()) {
@@ -244,7 +244,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 Lasers[0].Tell = false;
                 Lasers[1].Tell = false;
                 //Adjust aim
-                float AimSpeed = MathHelper.ToRadians(0.75f);
+                float AimSpeed = MathHelper.ToRadians(0.85f);
                 Vector2 aim = Lasers[2].Projectile.velocity;
                 Vector2 aim1 = Lasers[3].Projectile.velocity;
                 if(destination.X < arena.Center.X)
@@ -305,17 +305,17 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 
         private void FocusedBulletHell()
         {
-            if(AttackTimer % 45)
+            if(AttackTimer % 30 == 0)
             {
                 Random rand = new Random();
-                Vector2 v = null;
-                if(destination.X < arena.Center.X)
-                {
-                    v = Lasers[0].NPC.velocity.RotatedBy((MathHelper.Pi / 24f) * rand.Next(1,3));}
-                else
-                {
-                    v = Lasers[1].NPC.velocity.RotatedBy((MathHelper.Pi / 24f) * rand.Next(1,3));}
-                Projectile.newProjectile(NPC.GetSource_FromThis(), NPC.Center, v, ModContent.ProjectileType<GateKeeperCrystalShard>(), 15, 1, 0, 0 ,0);
+                Vector2 v = Vector2.Zero;
+                if(NPC.Center.X < arena.Center.X)              {
+                    v = Lasers[1].Projectile.velocity.RotatedBy((-MathHelper.Pi / 54f) * rand.Next(1,8));
+                }
+                else                {
+                    v = Lasers[1].Projectile.velocity.RotatedBy((MathHelper.Pi / 54f) * rand.Next(1,8));
+                }
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, v, ModContent.ProjectileType<GateKeeperCrystalShard>(), 15, 1, 0, 0 ,0);
             }
         }
 
@@ -400,11 +400,13 @@ namespace AncientRealms.Content.Bosses.GateKeeper
         {
             if(AttackTimer % VolleyTimeInterval == 0)
             {
+                Random rand = new Random();
+                float randomOffset = MathHelper.ToRadians(rand.Next(-((int)MathHelper.ToDegrees(ShardSpacing/2)), ((int)(MathHelper.ToDegrees(ShardSpacing/2)))));
                 for(int i = 0; i < AngleWidth/ShardSpacing; i++)
                 {
                     Projectile shard = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, 
-                        ((i * ShardSpacing) + TargetAngle - (AngleWidth/2)).ToRotationVector2() * 45f, 
-                        ModContent.ProjectileType<GateKeeperShardVolleyProjectile>(), ShardVolleyDamage, 1, 0, 120f, 120f);
+                        ((i * ShardSpacing) + TargetAngle - (AngleWidth/2) + randomOffset).ToRotationVector2() * 25f, 
+                        ModContent.ProjectileType<GateKeeperShardVolleyProjectile>(), ShardVolleyDamage, 1, 0, 40f, 40f);
                     (shard.ModProjectile as GateKeeperShardVolleyProjectile).source = this;
                 }
             }
@@ -415,14 +417,15 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             returnToCenter = false;
             if(AttackTimer < AttackDelay)
                 return;
+            if(AttackTimer == AttackDelay)
+                RandomizeTarget();
             if(AttackTimer < AttackDelay + (0.6 * SlamTelegraphLength))
             {
-                RandomizeTarget();
-                NPC.Center = Main.player[NPC.target].Center + new Vector2(0,20 * 16);
+                NPC.Center = Main.player[NPC.target].Center + new Vector2(0,-20 * 16);
             } 
             else if(AttackTimer < AttackDelay + SlamTelegraphLength)
             {
-                NPC.Center += new Vector2(0, 0.05f);
+                NPC.Center += new Vector2(0, -0.05f);
             }
             else
             {
@@ -430,7 +433,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 {
                     NPC.velocity = Vector2.Zero;
 
-                    ShardVolley(100 , MathHelper.Pi / 7, MathHelper.Pi, -MathHelper.PiOver2);
+                    ShardVolley(60 , MathHelper.Pi / 7, MathHelper.Pi, -MathHelper.PiOver2);
                 }
                 else
                 {

@@ -66,9 +66,9 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                     targetSet = false;
                     NPC.velocity = Vector2.Zero;
                     if(Main.expertMode)
-                        for(int i = 0; i < 8; i++)
+                        for(int i = 0; i < 7; i++)
                         {
-                            Projectile shard = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center, Vector2.UnitX.RotatedBy(MathHelper.Pi / 4 * i), ProjectileType<GateKeeperCrystalShard>(), 12, 12f);
+                            Projectile shard = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center, Vector2.UnitX.RotatedBy(MathHelper.Pi / 3.5 * i), ProjectileType<GateKeeperCrystalShard>(), 12, 12f);
                             shard.damage = parent.CrystalSmashProjectileDamage;
                         }
                 }
@@ -106,9 +106,9 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                     for (int k = 0; k < Main.maxPlayers; k++) //laser collision
                     {
                         Player Player = Main.player[k];
-                        if(CollisionHelper.CheckCircularCollision(Projectile.Center, 64, Player.Hitbox))
+                        if(CollisionHelper.CheckCircularCollision(NPC.Center, 128, Player.Hitbox))
                         {
-                            Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(k, Projectile.whoAmI), NPC.damage, 0, false, false, -1, false);
+                            Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(k, NPC.whoAmI), 25, 0, false, false, -1, false);
                         }
                     }
                 }
@@ -191,16 +191,17 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 			NPC.netUpdate = true;
 		}
 
-        public override bool PreDraw(ref Color lightColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             if(Arcing)
             {  
                 Color tellColor = Color.SkyBlue;
                 float tellOpacity = 0.01f + ((parent.AttackTimer % 180 / 270) * 
-                    (parent.AttackTimer % (180 - (parent.AttackTimer % 180)) / (180 - (parent.AttackTimer % 180))));
+                    (parent.AttackTimer % (200 - (parent.AttackTimer % 180)) / (200 - (parent.AttackTimer % 180))));
                 Texture2D telegraphTexture = Request<Texture2D>(Texture + "ExplosionTell").Value;
 			    Main.spriteBatch.Draw(telegraphTexture, NPC.Center - Main.screenPosition - new Vector2(telegraphTexture.Width / 2, telegraphTexture.Height / 2), default, tellColor * tellOpacity);
             }
+            return true;
         }
     }
 }

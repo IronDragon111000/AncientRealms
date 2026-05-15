@@ -1,39 +1,11 @@
 {
   "version": 3,
   "targets": {
-    "net8.0": {
-      "AssGen/3.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/AssGen.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/AssGen.dll": {}
-        }
-      }
-    }
+    "net8.0": {}
   },
-  "libraries": {
-    "AssGen/3.0.0": {
-      "sha512": "c0HVU6o/vFuh67niwbjKLBDFkMwUc9YRdEhI8zj7Kl9i2BufMFlFcDa73o0M/PEVJvYeFIfcBFaatcNiDv508Q==",
-      "type": "package",
-      "path": "assgen/3.0.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE.txt",
-        "README.md",
-        "analyzers/dotnet/cs/AssGen.dll",
-        "assgen.3.0.0.nupkg.sha512",
-        "assgen.nuspec",
-        "lib/netstandard2.0/AssGen.dll"
-      ]
-    }
-  },
+  "libraries": {},
   "projectFileDependencyGroups": {
-    "net8.0": [
-      "AssGen >= 3.0.0"
-    ]
+    "net8.0": []
   },
   "packageFolders": {
     "C:\\Users\\IronDragon\\.nuget\\packages\\": {}
@@ -79,12 +51,6 @@
     "frameworks": {
       "net8.0": {
         "targetAlias": "net8.0",
-        "dependencies": {
-          "AssGen": {
-            "target": "Package",
-            "version": "[3.0.0, )"
-          }
-        },
         "imports": [
           "net461",
           "net462",

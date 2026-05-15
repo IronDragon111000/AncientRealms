@@ -1,4 +1,23 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using static Microsoft.Xna.Framework.Graphics.Texture2D;
+using System;
+using System.IO;
+using Terraria;
+using Terraria.Enums;
+using Terraria.GameContent;
+using Terraria.GameContent.Shaders;
+using Terraria.Graphics.Effects;
+using Terraria.ID;
+using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
+using Terraria.ModLoader.IO;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using AncientRealms.Content.Bosses.SpiderBoss;
+using AncientRealms.Helpers;
+using AncientRealms;
 
 namespace AncientRealms.Content.Bosses.SpiderBoss
 {
@@ -15,7 +34,6 @@ namespace AncientRealms.Content.Bosses.SpiderBoss
             Projectile.width = 64;
             Projectile.height = 64;
             Projectile.penetrate = -1; // will be overiden by boss
-			Projectile.tileCollide = false;
             Projectile.hostile = false;
             Projectile.friendly = false;
             Projectile.ignoreWater = true;
@@ -28,8 +46,10 @@ namespace AncientRealms.Content.Bosses.SpiderBoss
             if(phase >= 6)
             {
                 Projectile.hostile = true;
-                Projectile.velocity += new Vector2(0, 0.05f); // give projectile gravity
+                Projectile.velocity += new Vector2(0, 0.5f); // give projectile gravity
+
             }
+            Projectile.frame = phase;
         }
 
         public override void OnKill(int timeLeft)
@@ -41,20 +61,14 @@ namespace AncientRealms.Content.Bosses.SpiderBoss
                     ModContent.ProjectileType<SpiderBossAcidSmallProjectile>(), 15, 1, 0, 0, 0);
             }
         }
-        public override void FindFrame(int frameHeight)
-        {
-            if(phase < 6)
-                {Projectile.frame.Y = frameHeight * phase;}
-            else
-                {Projectile.frame.Y = frameHeight * phase;} // Todo implement an animation during flight
-        }
 
         public override bool PreDraw(ref Color lightColor)
         {
             if(phase >= 6)
             {
                 Texture2D texture = Request<Texture2D>(Texture).Value;
-			    Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition - new Vector2(Projectile.width / 2, Projectile.height / 2), default, lightColor);
+                texture.Frame(1,7,0,6);
+			    Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition - new Vector2(Projectile.width / 2, Projectile.height / 2), default, lightColor, Projectile.rotation, new Vector2(Projectile.width / 2, Projectile.height / 2), Projectile.scale, SpriteEffects.None, 0);
                 return false;
             }
             return true;

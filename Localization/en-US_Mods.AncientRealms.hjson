@@ -52,6 +52,8 @@ Projectiles: {
 	GateKeeperCrystalShard.DisplayName: Gate Keeper Crystal Shard
 	GateKeeperCrystalLaser.DisplayName: Gate Keeper Crystal Laser
 	GateKeeperShardVolleyProjectile.DisplayName: Gate Keeper Shard Volley Projectile
+	SpiderBossAcidSmallProjectile.DisplayName: Spider Boss Acid Small Projectile
+	SpiderBossAcidBigProjectile.DisplayName: Spider Boss Acid Big Projectile
 }
 
 Biomes: {

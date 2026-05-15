@@ -17,7 +17,7 @@ namespace AncientRealms.Content.Bosses.SpiderBoss
         
         public override void AI()
         {
-            Projectile.velocity += new Vector2(0, 0.05f); // give projectile gravity    
+            Projectile.velocity += new Vector2(0, 0.5f); // give projectile gravity    
         }
     }
 }

@@ -70,7 +70,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
                 DelegateMethods.f_1 = 1f; // f_1 is an unnamed decompiled variable whose function is unknown. Leave it at 1.
                 Vector2 startPosition = Projectile.Center - Main.screenPosition;
                 Vector2 endPosition = endPoint - Main.screenPosition;
-                DrawBeam(Main.spriteBatch, texture, startPosition, endPosition, drawScale, Color.SkyBlue * 0.02f);
+                DrawBeam(Main.spriteBatch, texture, startPosition, endPosition, drawScale, Color.SkyBlue * 0.05f);
                 return false;
             }
             return true;

@@ -17,6 +17,23 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using ReLogic.Content;
 using AssGen;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using static Microsoft.Xna.Framework.Graphics.Texture2D;
+using System.IO;
+using Terraria;
+using Terraria.Enums;
+using Terraria.GameContent;
+using Terraria.GameContent.Shaders;
+using Terraria.ID;
+using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using AncientRealms.Content.Bosses.EldritchVoid;
+using AncientRealms.Helpers;
+using AncientRealms;
 
 namespace AncientRealms.Content.Biomes.VoidBiome
 {

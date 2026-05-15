@@ -273,7 +273,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
             switch (AttackPhase) //Attacks
 			{
 				case 0: 
-					ShardVolley(90);
+					ShardVolley(70);
 					if(Main.expertMode)
 						CrystalArcRing();
 					if(AttackTimer > 360 + AttackDelay)
@@ -320,7 +320,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 			if (AttackTimer == 1) //switching out attacks
 			{
 				AttackPhase++;
-				if (AttackPhase > 2)
+				if (AttackPhase > 3)
 				AttackPhase = 0;
 			}
 
@@ -334,7 +334,7 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 					break;
 				case 1: 
 					LaserConverge();
-					if(AttackTimer > AttackDelay + LaserConvergeTelegraphLength + 200)
+					if(AttackTimer > AttackDelay + LaserConvergeTelegraphLength + 330)
 						ResetAttack();
 					break;
 				case 2: 
@@ -342,7 +342,10 @@ namespace AncientRealms.Content.Bosses.GateKeeper
 					if(AttackTimer > AttackDelay + SlamTelegraphLength + 200)
 						ResetAttack();
 					break;
-				case 3: break;
+				case 3: 
+					if(AttackTimer > AttackDelay)
+						ResetAttack();
+						break;
 				case 4: break;
 			}
 		}

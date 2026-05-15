@@ -1,7 +1,6 @@
 global using Microsoft.Xna.Framework;
 global using Microsoft.Xna.Framework.Graphics;
 global using ReLogic.Content;
-global using AncientRealms.Common;
 global using AncientRealms.Helpers;
 global using Terraria;
 global using Terraria.ID;
