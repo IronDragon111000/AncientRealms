@@ -44,7 +44,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 
         public override void OnKill(int timeLeft)
         {
-            for (int k = 0; k < Main.maxPlayers; k++) //laser collision
+            for (int k = 0; k < Main.maxPlayers; k++)
 			{
 				Player Player = Main.player[k];
                 if(CollisionHelper.CheckCircularCollision(Projectile.Center, 200, Player.Hitbox))

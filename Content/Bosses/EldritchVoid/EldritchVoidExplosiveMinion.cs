@@ -22,6 +22,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 {
     public class EldritchVoidExplosiveMinion : ModNPC
     {
+        public ref float Timer => ref NPC.ai[0];
         public override void SetDefaults()
         {
             NPC.width = 45;
@@ -53,6 +54,11 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
             if(speed <= 15f)
                 speed += 0.1f;
             UpdateAim(NPC.Center, turningPower, speed);
+            Timer++;
+            if(Timer % 6)
+            {
+                NPC.life -= NPC.lifeMax / 55;
+            }
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
@@ -62,7 +68,19 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 
         public override void OnKill()
         {
-            base.OnKill();
+            for (int k = 0; k < Main.maxPlayers; k++)
+			{
+				Player Player = Main.player[k];
+                if(CollisionHelper.CheckCircularCollision(Projectile.Center, 200, Player.Hitbox))
+                {
+                    Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(k, Projectile.whoAmI), (int)damage, 0, false, false, -1, false);
+                }
+            }
+        }
+
+        public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo info)
+        {
+             npc.KillMe();
         }
 
         private void UpdateAim(Vector2 source, float turnSpeed, float Speed) {
@@ -96,5 +114,13 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 				NPC.netUpdate = true;
 			}
 		}
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+            Color tellColor = Color.DarkMagenta;
+            float tellOpacity = 0.05f + (0.35f * (Timer % NPC.life)/NPC.life) * (NPC.lifeMax / (3 * NPC.life + NPC.lifeMax));                
+            Texture2D telegraphTexture = Request<Texture2D>("AncientRealms/Content/Bosses/EldritchVoid/EldritchVoidExplodingProjectileTell").Value;
+		    Main.spriteBatch.Draw(telegraphTexture, NPC.Center - Main.screenPosition - new Vector2(telegraphTexture.Width / 2, telegraphTexture.Height / 2), default, tellColor * tellOpacity);
+        }
     }
 }
