@@ -2,7 +2,7 @@ namespace AncientRealms.Helpers
 {
     public static class MovementHelper
     {
-        public Vector2 AdjustAim(float AimSpeed, Vector2 CurrentDirection, Vector2 Aim)
+        public static Vector2 AdjustAim(float AimSpeed, Vector2 CurrentDirection, Vector2 Aim)
         {
             if (Aim.HasNaNs())
             {
@@ -23,7 +23,7 @@ namespace AncientRealms.Helpers
             // Set new AttackDirection
             return newAngle.ToRotationVector2();
         }
-        public float AdjustAim(float AimSpeed, float CurrentDirection, float Aim)
+        public static float AdjustAim(float AimSpeed, float CurrentDirection, float Aim)
         {
             // Get the smallest angle difference
             float angleDiff = MathHelper.WrapAngle(Aim - CurrentDirection);

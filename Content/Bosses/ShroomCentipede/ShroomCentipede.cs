@@ -12,7 +12,7 @@ using Terraria.Graphics.Effects;
 namespace AncientRealms.Content.Bosses.ShroomCentipede
 {
     //Head
-    [AutoloadBossHead]
+    //[AutoloadBossHead]
     public sealed partial class ShroomCentipedeHead : ModNPC
     {
         internal ref float GlobalTimer => ref NPC.ai[0];
@@ -54,6 +54,7 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
             NPC.aiStyle = -1;
             NPC.knockBackResist = 0f; // Bosses are immune to knockback, so we set this to 0.
             NPC.boss = true;
+            NPC.scale = 2f;
         }
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot) 
@@ -189,7 +190,7 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
 			{
 				NPC bodySegmentNPC = NPC.NewNPCDirect(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<ShroomCentipedeBody>(), NPC.whoAmI);
 				ShroomCentipedeBody bodySegment = bodySegmentNPC.ModNPC as ShroomCentipedeBody;
-                bodySegment.head = this;
+                bodySegment.Head = this;
                 bodySegment.SegmentID = i;
                 BodySegments.Add(bodySegment);
 
@@ -200,7 +201,7 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
 			}
             NPC tailSegmentNPC = NPC.NewNPCDirect(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<ShroomCentipedeTail>(), NPC.whoAmI);
 			ShroomCentipedeTail tailSegment = tailSegmentNPC.ModNPC as ShroomCentipedeTail;
-            tailSegment.head = this;
+            tailSegment.Head = this;
             Tail = tailSegment;
 
 			// Finally, syncing, only sync on server and if the NPC actually exists (Main.maxNPCs is the index of a dummy NPC, there is no point syncing it)
@@ -230,7 +231,7 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
             }
 
             //temp follow player
-            NPC.velocity =  5f * Vector2.Normalize(NPC.Center - Main.Player[NPC.target].Center);
+            NPC.velocity =  5f * Vector2.Normalize(NPC.Center - Main.player[NPC.target].Center);
         }
 
         private void SecondPhase()
@@ -294,6 +295,7 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
             NPC.npcSlots = 10f; // Take up open spawn slots, preventing random NPCs from spawning during the fight
             NPC.aiStyle = -1;
             NPC.knockBackResist = 0f; // Bosses are immune to knockback, so we set this to 0.
+            NPC.scale = 2f;
         }
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot) {
@@ -304,7 +306,7 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
         public override bool PreAI() 
         {
             if (!Head.NPC.active) {
-                NPC.LifeBegone(); // Kill segment if head is gone
+                NPC.active = false; // Kill segment if head is gone
                 return false;
             }
 
@@ -312,29 +314,6 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
             NPC.life = Head.NPC.life;
             NPC.lifeMax = Head.NPC.lifeMax;
             return true;
-        }
-
-        public override void ModifyHitByItem(Player player, Item item, ref NPC.HitModifiers modifiers) 
-        {
-            ForwardDamageToHead(ref modifiers);
-        }
-
-        public override void ModifyHitByProjectile(Projectile projectile, ref NPC.HitModifiers modifiers) 
-        {
-            ForwardDamageToHead(ref modifiers);
-        }
-
-        private void ForwardDamageToHead(ref NPC.HitModifiers modifiers)
-        {   
-            // Calculate final damage modifiers
-            var finalMods = modifiers.ToHitInfo(NPC.defense, immunityCooldownSlot: -1);
-            
-            // Strike the head instead
-            Head.Strike.StrikeNPC(finalMods);
-            
-            // Prevent the segment itself from taking damage
-            modifiers.SetMaxDamage(0); 
-            modifiers.DisableCrit();
         }
 
         public override void AI()
@@ -395,6 +374,7 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
             NPC.npcSlots = 10f; // Take up open spawn slots, preventing random NPCs from spawning during the fight
             NPC.aiStyle = -1;
             NPC.knockBackResist = 0f; // Bosses are immune to knockback, so we set this to 0.
+            NPC.scale = 2f;
         }
         
         public override bool CanHitPlayer(Player target, ref int cooldownSlot) {
@@ -405,7 +385,7 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
         public override bool PreAI() 
         {
             if (!Head.NPC.active) {
-                NPC.LifeBegone(); // Kill segment if head is gone
+                NPC.active = false; // Kill segment if head is gone
                 return false;
             }
 
@@ -428,28 +408,6 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
             {
                 NPC.rotation = Head.BodySegments[Head.BodySegments.Count - 1].NPC.rotation + maxAngleSeperation;
             }
-        }
-        public override void ModifyHitByItem(Player player, Item item, ref NPC.HitModifiers modifiers) 
-        {
-            ForwardDamageToHead(ref modifiers);
-        }
-
-        public override void ModifyHitByProjectile(Projectile projectile, ref NPC.HitModifiers modifiers) 
-        {
-            ForwardDamageToHead(ref modifiers);
-        }
-
-        private void ForwardDamageToHead(ref NPC.HitModifiers modifiers)
-        {   
-            // Calculate final damage modifiers
-            var finalMods = modifiers.ToHitInfo(NPC.defense, immunityCooldownSlot: -1);
-            
-            // Strike the head instead
-            Head.Strike.StrikeNPC(finalMods);
-            
-            // Prevent the segment itself from taking damage
-            modifiers.SetMaxDamage(0); 
-            modifiers.DisableCrit();
         }
     }
 }

@@ -38,6 +38,9 @@ NPCs: {
 	EldritchVoidExplosiveMinion.DisplayName: Eldritch Void Explosive Minion
 	SpiderBoss.DisplayName: Spider Boss
 	CrystalSlug.DisplayName: Crystal Slug
+	ShroomCentipedeTail.DisplayName: Shroom Centipede Tail
+	ShroomCentipedeHead.DisplayName: Shroom Centipede Head
+	ShroomCentipedeBody.DisplayName: Shroom Centipede Body
 }
 
 Projectiles: {

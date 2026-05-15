@@ -55,7 +55,7 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
                 speed += 0.1f;
             UpdateAim(NPC.Center, turningPower, speed);
             Timer++;
-            if(Timer % 6)
+            if(Timer % 6 == 0)
             {
                 NPC.life -= NPC.lifeMax / 55;
             }
@@ -71,16 +71,17 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
             for (int k = 0; k < Main.maxPlayers; k++)
 			{
 				Player Player = Main.player[k];
-                if(CollisionHelper.CheckCircularCollision(Projectile.Center, 200, Player.Hitbox))
+                if(CollisionHelper.CheckCircularCollision(NPC.Center, 200, Player.Hitbox))
                 {
-                    Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(k, Projectile.whoAmI), (int)damage, 0, false, false, -1, false);
+                    Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(k, NPC.whoAmI), (int)NPC.damage, 0, false, false, -1, false);
                 }
             }
         }
 
-        public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo info)
+        public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
         {
-             npc.KillMe();
+            NPC.StrikeInstantKill(); 
+            modifiers.Knockback *= 0.5f;
         }
 
         private void UpdateAim(Vector2 source, float turnSpeed, float Speed) {
@@ -115,12 +116,13 @@ namespace AncientRealms.Content.Bosses.EldritchVoid
 			}
 		}
 
-        public override bool PreDraw(ref Color lightColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             Color tellColor = Color.DarkMagenta;
             float tellOpacity = 0.05f + (0.35f * (Timer % NPC.life)/NPC.life) * (NPC.lifeMax / (3 * NPC.life + NPC.lifeMax));                
             Texture2D telegraphTexture = Request<Texture2D>("AncientRealms/Content/Bosses/EldritchVoid/EldritchVoidExplodingProjectileTell").Value;
 		    Main.spriteBatch.Draw(telegraphTexture, NPC.Center - Main.screenPosition - new Vector2(telegraphTexture.Width / 2, telegraphTexture.Height / 2), default, tellColor * tellOpacity);
+            return true;
         }
     }
 }
