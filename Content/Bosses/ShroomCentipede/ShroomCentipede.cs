@@ -180,7 +180,7 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
         {
             if(BodySegments.Count != 0)
 				return;
-			int BodySegmentCount = 16;
+			int BodySegmentCount = 48;
 
 			if (Main.netMode == NetmodeID.MultiplayerClient) {
 				// Because we want to spawn minions, and minions are NPCs, we have to do this on the server (or singleplayer, "!= NetmodeID.MultiplayerClient" covers both)
@@ -228,7 +228,7 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
             switch (AttackPhase) //Attacks
             {
                 case 0:
-                    DashAttack((int)AttackTimer % 200);
+                    DashAttack((int)AttackTimer % 185);
                     break;
             }
         }
