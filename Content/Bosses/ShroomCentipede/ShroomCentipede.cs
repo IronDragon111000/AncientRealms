@@ -8,6 +8,7 @@ using static Terraria.ModLoader.ModContent;
 using AncientRealms.Core.Systems;
 using AncientRealms.Content.Bosses.GateKeeper;
 using Terraria.Graphics.Effects;
+using System;
 
 namespace AncientRealms.Content.Bosses.ShroomCentipede
 {
@@ -40,8 +41,8 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
 
         public override void SetDefaults()
         {
-            NPC.width = 130;
-            NPC.height = 130;
+            NPC.width = 72;
+            NPC.height = 72;
             NPC.damage = 25;
             NPC.defense = 20;
             NPC.lifeMax = 2000;
@@ -108,8 +109,8 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
                 //on spawn effects
 				case (int)AIStates.SpawnEffects:
 
-					const int arenaWidth = 1600;
-					const int arenaHeight = 1000;
+					const int arenaWidth = 16 * 120;
+					const int arenaHeight = 16 * 120; //16 is the height of a tile
 					arena = new Rectangle((int)NPC.Center.X  - arenaWidth / 2, (int)NPC.Center.Y - arenaHeight / 2, arenaWidth, arenaHeight);
                     SpawnSegments();
 					ChangePhase(AIStates.SpawnAnimation, true);
@@ -179,7 +180,7 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
         {
             if(BodySegments.Count != 0)
 				return;
-			int BodySegmentCount = 4;
+			int BodySegmentCount = 16;
 
 			if (Main.netMode == NetmodeID.MultiplayerClient) {
 				// Because we want to spawn minions, and minions are NPCs, we have to do this on the server (or singleplayer, "!= NetmodeID.MultiplayerClient" covers both)
@@ -216,7 +217,7 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
         }
 
         private void FirstPhase()
-        {
+        { 
             if (AttackTimer == 1) //switching out attacks
 			{
 				AttackPhase++;
@@ -227,11 +228,9 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
             switch (AttackPhase) //Attacks
             {
                 case 0:
+                    DashAttack((int)AttackTimer % 200);
                     break;
             }
-
-            //temp follow player
-            NPC.velocity =  5f * Vector2.Normalize(NPC.Center - Main.player[NPC.target].Center);
         }
 
         private void SecondPhase()
@@ -282,8 +281,8 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
 		}
         public override void SetDefaults()
         {
-            NPC.width = 130;
-            NPC.height = 130;
+            NPC.width = 72;
+            NPC.height = 72;
             NPC.damage = 25;
             NPC.defense = 20;
             NPC.lifeMax = 2000;
@@ -303,6 +302,16 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
 	        return true;
         }
 
+        public override bool CheckActive()
+        {
+            // Ensure the index is valid within the world's active NPC array
+            if (Head != null && Head.NPC.active) {
+                NPC.active = true; // Keep the tail active if the head is active
+                return false; // The head is active, so the tail should remain active
+            }
+            return true; 
+        }
+
         public override bool PreAI() 
         {
             if (!Head.NPC.active) {
@@ -318,32 +327,17 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
 
         public override void AI()
         {
-            float maxAngleSeperation = MathHelper.Pi / 6;
             if(SegmentID == 0)
             {
-                NPC.Center = Head.NPC.Center + Head.NPC.rotation.ToRotationVector2() * (Head.NPC.width / 2);
-                NPC.rotation = MovementHelper.AdjustAim(MathHelper.ToRadians(1.5f), NPC.rotation, Head.NPC.rotation);
-                if(Head.NPC.rotation - NPC.rotation > maxAngleSeperation)
-                {
-                    NPC.rotation = Head.NPC.rotation - maxAngleSeperation;
-                }
-                else if(Head.NPC.rotation - NPC.rotation < -maxAngleSeperation)
-                {
-                    NPC.rotation = Head.NPC.rotation + maxAngleSeperation;
-                }
+                float rotationStrength = 0.1f * Math.Abs(MathHelper.WrapAngle(Head.NPC.rotation - NPC.rotation))/MathHelper.PiOver4;
+                NPC.Center = Head.NPC.Center - Head.NPC.rotation.ToRotationVector2() * (Head.NPC.width / 1.5f);
+                NPC.rotation = MovementHelper.AdjustAim(rotationStrength, NPC.rotation, Head.NPC.rotation);
             }
             else
             {
-                NPC.Center = Head.BodySegments[SegmentID - 1].NPC.Center + Head.BodySegments[SegmentID - 1].NPC.rotation.ToRotationVector2() * (NPC.height / 2);
-                NPC.rotation = MovementHelper.AdjustAim(MathHelper.ToRadians(1.5f), NPC.rotation, Head.BodySegments[SegmentID - 1].NPC.rotation);
-                if(Head.BodySegments[SegmentID - 1].NPC.rotation - NPC.rotation > maxAngleSeperation)
-                {
-                    NPC.rotation = Head.BodySegments[SegmentID - 1].NPC.rotation - maxAngleSeperation;
-                }
-                else if(Head.BodySegments[SegmentID - 1].NPC.rotation - NPC.rotation < -maxAngleSeperation)
-                {
-                    NPC.rotation = Head.BodySegments[SegmentID - 1].NPC.rotation + maxAngleSeperation;
-                }
+                float rotationStrength = 0.1f * Math.Abs(MathHelper.WrapAngle(Head.BodySegments[SegmentID - 1].NPC.rotation - NPC.rotation))/MathHelper.PiOver4;
+                NPC.Center = Head.BodySegments[SegmentID - 1].NPC.Center - Head.BodySegments[SegmentID - 1].NPC.rotation.ToRotationVector2() * (NPC.height / 1.5f);
+                NPC.rotation = MovementHelper.AdjustAim(rotationStrength, NPC.rotation, Head.BodySegments[SegmentID - 1].NPC.rotation);
             }
         }
     }
@@ -361,8 +355,8 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
 		}
         public override void SetDefaults()
         {
-            NPC.width = 130;
-            NPC.height = 130;
+            NPC.width = 72;
+            NPC.height = 72;
             NPC.damage = 25;
             NPC.defense = 20;
             NPC.lifeMax = 2000;
@@ -382,6 +376,16 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
 	        return true;
         }
 
+        public override bool CheckActive()
+        {
+            // Ensure the index is valid within the world's active NPC array
+            if (Head != null && Head.NPC.active) {
+                NPC.active = true; // Keep the tail active if the head is active
+                return false; // The head is active, so the tail should remain active
+            }
+            return true; 
+        }
+
         public override bool PreAI() 
         {
             if (!Head.NPC.active) {
@@ -397,17 +401,9 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
 
         public override void AI()
         {
-            float maxAngleSeperation = MathHelper.Pi / 6;
-            NPC.Center = Head.BodySegments[Head.BodySegments.Count - 1].NPC.Center + Head.BodySegments[Head.BodySegments.Count - 1].NPC.rotation.ToRotationVector2() * (Head.BodySegments[Head.BodySegments.Count - 1].NPC.height / 2);                
-            NPC.rotation = MovementHelper.AdjustAim(MathHelper.ToRadians(1.5f), NPC.rotation, Head.BodySegments[Head.BodySegments.Count - 1].NPC.rotation);
-            if(Head.BodySegments[Head.BodySegments.Count - 1].NPC.rotation - NPC.rotation > maxAngleSeperation)
-            {
-                NPC.rotation = Head.BodySegments[Head.BodySegments.Count - 1].NPC.rotation - maxAngleSeperation;
-            }
-            else if(Head.BodySegments[Head.BodySegments.Count - 1].NPC.rotation - NPC.rotation < -maxAngleSeperation)
-            {
-                NPC.rotation = Head.BodySegments[Head.BodySegments.Count - 1].NPC.rotation + maxAngleSeperation;
-            }
+            float rotationStrength = 0.1f * Math.Abs(MathHelper.WrapAngle(Head.BodySegments[Head.BodySegments.Count - 1].NPC.rotation - NPC.rotation))/MathHelper.PiOver4;
+            NPC.Center = Head.BodySegments[Head.BodySegments.Count - 1].NPC.Center - Head.BodySegments[Head.BodySegments.Count - 1].NPC.rotation.ToRotationVector2() * (Head.BodySegments[Head.BodySegments.Count - 1].NPC.height / 1.5f);                
+            NPC.rotation = MovementHelper.AdjustAim(rotationStrength, NPC.rotation, Head.BodySegments[Head.BodySegments.Count - 1].NPC.rotation);
         }
     }
 }
