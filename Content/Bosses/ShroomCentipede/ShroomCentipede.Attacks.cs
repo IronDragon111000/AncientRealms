@@ -41,7 +41,7 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
 			NPC.netUpdate = true;
 		}
 
-		private void DashAttack(int dashTimer, float dashSpeed = 38f)
+		private void DashAttack(int dashTimer, float dashSpeed = 42f)
 		{
 			if (dashTimer == 1)// Randomize target at the start of the dash
 			{
@@ -52,7 +52,11 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
 				targetDirection.Normalize();
 				NPC.rotation = targetDirection.ToRotation();
 				NPC.velocity = targetDirection * 0.5f;
-			} else
+			} else if(dashTimer > 105 && (NPC.Center.Y > arena.Bottom + 240 || NPC.Center.Y < arena.Top - 240 || NPC.Center.X < arena.Left - 240 || NPC.Center.X > arena.Right + 240))
+			{
+				NPC.velocity = Vector2.Zero;
+				NPC.rotation = MovementHelper.AdjustAim(2f, NPC.rotation, (Main.player[NPC.target].Center - NPC.Center).ToRotation());
+			}else
 			{
 				NPC.velocity = targetDirection * dashSpeed;
 				NPC.rotation = NPC.velocity.ToRotation();

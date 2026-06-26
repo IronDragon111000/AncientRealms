@@ -228,7 +228,7 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
             switch (AttackPhase) //Attacks
             {
                 case 0:
-                    DashAttack((int)AttackTimer % 185);
+                    DashAttack((int)AttackTimer % 200);
                     break;
             }
         }
@@ -329,15 +329,43 @@ namespace AncientRealms.Content.Bosses.ShroomCentipede
         {
             if(SegmentID == 0)
             {
-                float rotationStrength = 0.1f * Math.Abs(MathHelper.WrapAngle(Head.NPC.rotation - NPC.rotation))/MathHelper.PiOver4;
-                NPC.Center = Head.NPC.Center - Head.NPC.rotation.ToRotationVector2() * (Head.NPC.width / 1.5f);
-                NPC.rotation = MovementHelper.AdjustAim(rotationStrength, NPC.rotation, Head.NPC.rotation);
+                const float MaxRotation = MathHelper.PiOver4; 
+                const float MaxStaticRotation = MathHelper.Pi / 6; 
+                NPC.rotation = (Head.NPC.Center - NPC.Center).ToRotation();
+                if(Math.Abs(MathHelper.WrapAngle(NPC.rotation - Head.NPC.rotation)) > MaxStaticRotation)
+                {
+                    float rotationStrength = 0.1f * Math.Abs(MathHelper.WrapAngle(Head.NPC.rotation - NPC.rotation))/MaxStaticRotation;
+                    NPC.rotation = MovementHelper.AdjustAim(rotationStrength, NPC.rotation, Head.NPC.rotation);
+                }
+                if(MathHelper.WrapAngle(NPC.rotation - Head.NPC.rotation) > MaxRotation)
+                {
+                    NPC.rotation = Head.NPC.rotation + MaxRotation;
+                }
+                if(MathHelper.WrapAngle(NPC.rotation - Head.NPC.rotation) < -MaxRotation)
+                {
+                    NPC.rotation = Head.NPC.rotation - MaxRotation;
+                }
+                NPC.Center = Head.NPC.Center - Head.NPC.rotation.ToRotationVector2() * (NPC.height / 1.5f);
             }
             else
             {
-                float rotationStrength = 0.1f * Math.Abs(MathHelper.WrapAngle(Head.BodySegments[SegmentID - 1].NPC.rotation - NPC.rotation))/MathHelper.PiOver4;
+                const float MaxRotation = MathHelper.PiOver4;
+                const float MaxStaticRotation = MathHelper.Pi / 6;  
+                NPC.rotation = (Head.BodySegments[SegmentID - 1].NPC.Center - NPC.Center).ToRotation();
+                if(Math.Abs(MathHelper.WrapAngle(NPC.rotation - Head.BodySegments[SegmentID - 1].NPC.rotation)) > MaxStaticRotation)
+                {
+                    float rotationStrength = 0.1f * Math.Abs(MathHelper.WrapAngle(Head.BodySegments[SegmentID - 1].NPC.rotation - NPC.rotation))/MaxStaticRotation;
+                    NPC.rotation = MovementHelper.AdjustAim(rotationStrength, NPC.rotation, Head.BodySegments[SegmentID - 1].NPC.rotation);
+                }
+                if(MathHelper.WrapAngle(NPC.rotation - Head.BodySegments[SegmentID - 1].NPC.rotation) > MaxRotation)
+                {
+                    NPC.rotation = Head.BodySegments[SegmentID - 1].NPC.rotation + MaxRotation;
+                }
+                if(MathHelper.WrapAngle(NPC.rotation - Head.BodySegments[SegmentID - 1].NPC.rotation) < -MaxRotation)
+                {
+                    NPC.rotation = Head.BodySegments[SegmentID - 1].NPC.rotation - MaxRotation;
+                }
                 NPC.Center = Head.BodySegments[SegmentID - 1].NPC.Center - Head.BodySegments[SegmentID - 1].NPC.rotation.ToRotationVector2() * (NPC.height / 1.5f);
-                NPC.rotation = MovementHelper.AdjustAim(rotationStrength, NPC.rotation, Head.BodySegments[SegmentID - 1].NPC.rotation);
             }
         }
     }
